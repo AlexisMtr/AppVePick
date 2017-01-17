@@ -4,6 +4,8 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
+import Traitements.Location;
+import Traitements.Velo;
 
 public class UserApp {
 
@@ -74,9 +76,7 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						System.out.println("Indiquer le numero de la station :");
-						int numStation = sc.nextInt();
-						louerVelo(numStation);
+						louerVelo();
 						break;
 					case 2:
 						reserverVelo();
@@ -116,8 +116,8 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("[SUPERVISEUR] Que voulez vous faire ?");
-			System.out.println("1 - TODO");
-			System.out.println("2 - TODO");
+			System.out.println("1 - Voir les locations");
+			System.out.println("2 - Afficher velos");
 			System.out.println("3 - TODO");
 			System.out.println("4 - TODO");
 			System.out.println("5 - TODO");
@@ -129,10 +129,10 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						// TODO
+						voirLocations();
 						break;
 					case 2:
-						// TODO
+						afficherVelos();
 						break;
 					case 3:
 						// TODO
@@ -164,41 +164,48 @@ public class UserApp {
 	
 	
 
-	public static void louerVelo(int station) throws SQLException
-	{
-		String query = "SELECT vel_id FROM ortizlu.bornette WHERE bor_etat = 'OK' AND vel_id IS NOT NULL AND sta_id = " + station;
-		Statement stmt = null;
-		ResultSet rs = null;
-		int choix;
+	private static void afficherVelos() {
 		try
 		{
-			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);
-			System.out.println("Liste des velos disponibles :");
-			while(rs.next())
-			{
-				int num = rs.getInt(1);
-				System.out.println("- " + num);
-			}
+			System.out.println("Quelle station ?");
+			int sta = sc.nextInt();
 			
-			stmt.close();
-			rs.close();
-			
-			System.out.println("Quel velo souhaitez-vous louer ?");
-			choix = sc.nextInt();
-			
-			stmt = Connexion.connexion().createStatement();
-			query = "INSERT INTO ortizlu.Location(loc_id, loc_deb, uti_id, vel_id) VALUES(ortizlu.location_id.nextval, SYSDATE, " + userId + ", " + choix + ")";
-			rs = stmt.executeQuery(query);
+			Velo.AfficherVelos(sta);
 		}
 		catch(Exception ex)
 		{
 			System.err.println(ex.getMessage());
 		}
-		finally
+	}
+
+	private static void voirLocations() {
+		try
 		{
-			if(stmt != null) stmt.close();
-			if(rs != null) rs.close();
+			Location.AfficherLocation();
+		}
+		catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
+	}
+
+	public static void louerVelo() throws SQLException
+	{
+		try
+		{
+			System.out.println("Quelle station ?");
+			int sta = sc.nextInt();
+
+			Velo.AfficherVelosDispo(sta);
+			System.out.println("Quel velo ?");
+			
+			int velo = sc.nextInt();
+			Location.LouerVelo(velo, userId);
+			
+		}
+		catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
 		}
 	}
 	public static void reserverVelo()
@@ -215,7 +222,29 @@ public class UserApp {
 	}
 	public static void rendreVelo()
 	{
-		
+		try
+		{
+			System.out.println("Quel velo associez-vous ?");
+			int veloId = sc.nextInt();
+			System.out.println("Sur quelle bornette ?");
+			int borneId = sc.nextInt();
+			
+			Velo.AssocierVelo(veloId, borneId);
+			
+			System.out.println("Saisir votre MDP");
+			sc.nextLine();
+			String password = sc.nextLine();
+			
+			int locationId = Location.VerifierLocation(password, userId, veloId);
+			if(locationId != 0)
+				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "€");
+			else
+				System.err.println("Aucune locations trouvees");
+		}
+		catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 
 }
