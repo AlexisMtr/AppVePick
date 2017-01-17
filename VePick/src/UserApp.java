@@ -7,9 +7,10 @@ import AccessBD.Connexion;
 
 public class UserApp {
 
+	public static int userId;
+	public static Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
-		
-		Scanner sc = new Scanner(System.in);
+		userId = 2;
 		System.out.println("VePick !");
 		int choix = 0;
 		while(choix == 0)
@@ -67,6 +68,7 @@ public class UserApp {
 		String query = "SELECT vel_id FROM ortizlu.bornette WHERE bor_etat = 'OK' AND vel_id IS NOT NULL AND sta_id = " + station;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int choix;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -77,6 +79,16 @@ public class UserApp {
 				int num = rs.getInt(1);
 				System.out.println("- " + num);
 			}
+			
+			stmt.close();
+			rs.close();
+			
+			System.out.println("Quel velo souhaitez-vous louer ?");
+			choix = sc.nextInt();
+			
+			stmt = Connexion.connexion().createStatement();
+			query = "INSERT INTO ortizlu.Location(loc_id, loc_deb, uti_id, vel_id) VALUES(ortizlu.location_id.nextval, SYSDATE, " + userId + ", " + choix + ")";
+			rs = stmt.executeQuery(query);
 		}
 		catch(Exception ex)
 		{
