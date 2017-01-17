@@ -20,7 +20,7 @@ public class UserApp {
 			System.out.println("3 - Signaler une dégradation au départ");
 			System.out.println("4 - Signaler une dégradation à l'arrivé");
 			System.out.println("5 - Rendre un vélo");
-			System.out.println("6 - Quitter !");
+			System.out.println("6 - Quitter !!");
 			
 			choix  = sc.nextInt();
 			try
