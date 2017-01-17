@@ -21,7 +21,7 @@ public class UserApp {
 			System.out.println("Quelle interface voulez-vous lancer ?");
 			System.out.println("1 - Interface Client");
 			System.out.println("2 - Interface Superviseur");
-			System.out.println("3 - Interface ...");
+			System.out.println("3 - Interface Conducteur");
 			System.out.println("4 - quitter !");
 			
 			choix  = sc.nextInt();
@@ -36,7 +36,7 @@ public class UserApp {
 						choixMenuSuperviseur();
 						break;
 					case 3:
-						// TODO
+						choixMenuConducteur();
 						break;
 					case 4:
 						System.exit(0);
@@ -63,12 +63,14 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("[CLIENT] Que voulez vous faire ?");
-			System.out.println("1 - Louer un vélo");
-			System.out.println("2 - Reserver un vélo");
-			System.out.println("3 - Signaler une dégradation au départ");
-			System.out.println("4 - Signaler une dégradation à l'arrivé");
-			System.out.println("5 - Rendre un vélo");
-			System.out.println("6 - sortir !");
+			System.out.println("1 - S'abonner (1 an)");
+			System.out.println("2 - Renouveller son abonnement (1 an)");
+			System.out.println("3 - Louer un vélo");
+			System.out.println("4 - Reserver un vélo");
+			System.out.println("5 - Signaler une dégradation au départ");
+			System.out.println("6 - Signaler une dégradation à l'arrivé");
+			System.out.println("7 - Rendre un vélo");
+			System.out.println("8 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -76,21 +78,27 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						louerVelo();
+						abonnement();
 						break;
 					case 2:
-						reserverVelo();
+						renouvellement(userId);
 						break;
 					case 3:
-						signalerDepart();
+						louerVelo();
 						break;
 					case 4:
-						signalerArrivee();
+						reserverVelo();
 						break;
 					case 5:
-						rendreVelo();
+						signalerDepart();
 						break;
 					case 6:
+						signalerArrivee();
+						break;
+					case 7:
+						rendreVelo();
+						break;
+					case 8:
 						sortir = true;
 						break;
 					default:
@@ -109,6 +117,14 @@ public class UserApp {
 		}
 	}
 	
+	private static void abonnement() {
+		// demander Nom, Prenom, Sexe, Code, ...
+	}
+
+	private static void renouvellement(int utilisateurId) {
+		// verifier utilisateur et renouveller
+	}
+
 	public static void choixMenuSuperviseur()
 	{
 		boolean sortir = false;
@@ -116,12 +132,14 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("[SUPERVISEUR] Que voulez vous faire ?");
-			System.out.println("1 - Voir les locations");
-			System.out.println("2 - Afficher velos");
-			System.out.println("3 - TODO");
-			System.out.println("4 - TODO");
-			System.out.println("5 - TODO");
-			System.out.println("6 - sortir !");
+			System.out.println("1 - Consulter les Routines");
+			System.out.println("2 - Modifier les Routines");
+			System.out.println("3 - Consulter les plages V+/V-");
+			System.out.println("4 - Modifier les plages V+/V-");
+			System.out.println("5 - Voir les velos par stations");
+			System.out.println("6 - Voir les velos endommages par station");
+			System.out.println("7 - Voir les places disponibles par station");
+			System.out.println("8 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -129,10 +147,10 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						voirLocations();
+						// TODO
 						break;
 					case 2:
-						afficherVelos();
+						// TODO
 						break;
 					case 3:
 						// TODO
@@ -144,6 +162,62 @@ public class UserApp {
 						// TODO
 						break;
 					case 6:
+						// TODO
+						break;
+					case 7:
+						// TODO
+						break;
+					case 8:
+						sortir = true;
+						break;
+					default:
+						break;
+				}
+			}
+			catch(Exception ex)
+			{
+				System.err.println(ex.getMessage());
+			}
+			
+			if (sortir)
+				break;
+			
+			choix = 0;
+		}
+	}
+	
+	
+	public static void choixMenuConducteur()
+	{
+		boolean sortir = false;
+		int choix = 0;
+		while(choix == 0)
+		{
+			System.out.println("[CONDUCTEUR] Que voulez vous faire ?");
+			System.out.println("1 - Declarer un velo HS");
+			System.out.println("2 - Consulter ma routine");
+			System.out.println("3 - Valider/Notifier une tache");
+			System.out.println("4 - Deplacer un velo");
+			System.out.println("5 - sortir !");
+			
+			choix  = sc.nextInt();
+			try
+			{
+				switch(choix)
+				{
+					case 1:
+						// TODO
+						break;
+					case 2:
+						// TODO
+						break;
+					case 3:
+						// TODO
+						break;
+					case 4:
+						// TODO
+						break;
+					case 5:
 						sortir = true;
 						break;
 					default:
