@@ -8,9 +8,9 @@ import java.sql.SQLException;
 public class Connexion {
 
 	public final static String configurationFile = "src/AccessBD/DB.properties";
-
+	public final static String schemasBD = "ortizlu";
 	private static Connection connexion = null;
-
+	
 	public static Connection connexion() throws IOException, ClassNotFoundException, SQLException
 	{
 		if (connexion != null)

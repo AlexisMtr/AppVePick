@@ -18,7 +18,7 @@ public class Reservation {
 		String dateDebutLocation, dateFinLocation;
 		int numStation;
 		//affiche les modèles de vélo
-		String query = "SELECT DISTINCT mod_id, mod_libelle FROM ortizlu.velo NATURAL JOIN ortizlu.modele ORDER BY mod_id";
+		String query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + ".velo NATURAL JOIN ortizlu.modele ORDER BY mod_id";
 		Statement stmt = null;
 		ResultSet rs = null;
 		try
@@ -50,7 +50,7 @@ public class Reservation {
 		dateFinLocation = sc.nextLine();
 		
 		//affiche toutes les stations
-		query = "SELECT sta_id, sta_adresse FROM ortizlu.station";
+		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + ".station";
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -72,8 +72,8 @@ public class Reservation {
 		System.out.println("Entrez le numéro de la station voulue :");
 		numStation = sc.nextInt();
 		
-		query = "INSERT INTO ortizlu.reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
-				+ "VALUES(ortizlu.reservation_id.NEXTVAL, "
+		query = "INSERT INTO " + Connexion.schemasBD + ".reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
+				+ "VALUES(" + Connexion.schemasBD + ".reservation_id.NEXTVAL, "
 				+ "TO_DATE('" + dateDebutLocation + "', 'dd/mm/yyyy'),"
 				+ "TO_DATE('" + dateFinLocation + "', 'dd/mm/yyyy'),"
 				+ numModeleVelo + ","
@@ -96,9 +96,9 @@ public class Reservation {
 		int numResa;
 		//affiche les résa du user connecté
 		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
-				+ "FROM ortizlu.reservation "
-				+ "NATURAL JOIN ortizlu.modele "
-				+ "NATURAL JOIN ortizlu.station "
+				+ "FROM " + Connexion.schemasBD + ".reservation "
+				+ "NATURAL JOIN " + Connexion.schemasBD + ".modele "
+				+ "NATURAL JOIN " + Connexion.schemasBD + ".station "
 				+ "WHERE uti_id = "+userId+ " ORDER BY res_id";
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -136,7 +136,7 @@ public class Reservation {
 		sc.reset();
 		numResa = sc.nextInt();
 		
-		query = "DELETE FROM ortizlu.reservation where res_id = " + numResa;
+		query = "DELETE FROM " + Connexion.schemasBD + ".reservation where res_id = " + numResa;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
