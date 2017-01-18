@@ -20,6 +20,8 @@ public class Connexion {
 		{
 			DBAccesProperties dbAccess = new DBAccesProperties(configurationFile);
 			connexion = DriverManager.getConnection(dbAccess.getDBUrl(), dbAccess.getUsername(), dbAccess.getPassword());
+			connexion.setAutoCommit(false);
+
 		}
 		catch (Exception e)
 		{

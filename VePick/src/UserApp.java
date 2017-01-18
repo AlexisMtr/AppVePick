@@ -1,9 +1,11 @@
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
+import Traitements.Reservation;
 
 public class UserApp {
 
@@ -18,10 +20,11 @@ public class UserApp {
 			System.out.println("Que voulez vous faire ?");
 			System.out.println("1 - Louer un vélo");
 			System.out.println("2 - Reserver un vélo");
-			System.out.println("3 - Signaler une dégradation au départ");
-			System.out.println("4 - Signaler une dégradation à l'arrivé");
-			System.out.println("5 - Rendre un vélo");
-			System.out.println("6 - Quitter !");
+			System.out.println("3 - Annuler une réservation");
+			System.out.println("4 - Signaler une dégradation au départ");
+			System.out.println("5 - Signaler une dégradation à l'arrivé");
+			System.out.println("6 - Rendre un vélo");
+			System.out.println("7 - Quitter !");
 			
 			choix  = sc.nextInt();
 			try
@@ -34,18 +37,21 @@ public class UserApp {
 						louerVelo(numStation);
 						break;
 					case 2:
-						reserverVelo();
+						reserverVelo(userId);
 						break;
 					case 3:
-						signalerDepart();
+						annulerReservationVelo(userId);
 						break;
 					case 4:
-						signalerArrivee();
+						signalerDepart();
 						break;
 					case 5:
-						rendreVelo();
+						signalerArrivee();
 						break;
 					case 6:
+						rendreVelo();
+						break;
+					case 7:
 						System.exit(0);
 						break;
 					default:
@@ -100,9 +106,21 @@ public class UserApp {
 			if(rs != null) rs.close();
 		}
 	}
-	public static void reserverVelo()
+	public static void reserverVelo(int userId)
 	{
-		
+		try {
+			Reservation.reserverVelo(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static void annulerReservationVelo(int userId)
+	{
+		try {
+			Reservation.annulerReservationVelo(userId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	public static void signalerDepart()
 	{

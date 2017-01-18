@@ -1,5 +1,150 @@
 package Traitements;
 
-public class Reservation {
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.util.Scanner;
 
+import AccessBD.Connexion;
+
+public class Reservation {
+	static Scanner sc = new Scanner(System.in);
+	
+	public static void reserverVelo(int userId) throws Exception
+	{
+		int numModeleVelo;
+		String dateDebutLocation, dateFinLocation;
+		int numStation;
+		//affiche les modèles de vélo
+		String query = "SELECT DISTINCT mod_id, mod_libelle FROM ortizlu.velo NATURAL JOIN ortizlu.modele ORDER BY mod_id";
+		Statement stmt = null;
+		ResultSet rs = null;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Liste des modèles de velos disponibles :");
+			while(rs.next())
+			{
+				int idMod = rs.getInt(1);
+				System.out.print(idMod + " - ");
+				String libelleMod = rs.getString(2);
+				System.out.println(libelleMod);
+			}
+			System.out.println();
+			stmt.close();
+			rs.close();
+		}catch(Exception ex){throw ex;}
+		
+		//demande le modèle de vélo
+		System.out.println("Entrez le numéro du modèle de vélo :");
+		numModeleVelo = sc.nextInt();
+		
+		//demande les périodes (début et fin)
+		System.out.println("Entrez une date de début location (JJ/MM/YYYY)");
+		sc.nextLine();
+		dateDebutLocation = sc.nextLine();
+		System.out.println("Entrez une date de fin location (JJ/MM/YYYY)");
+		dateFinLocation = sc.nextLine();
+		
+		//affiche toutes les stations
+		query = "SELECT sta_id, sta_adresse FROM ortizlu.station";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Liste des stations :");
+			while(rs.next())
+			{
+				int numSta = rs.getInt(1);
+				System.out.print(numSta + " - ");
+				String adresseSta = rs.getString(2);
+				System.out.println(adresseSta);
+			}
+			System.out.println();
+			stmt.close();
+			rs.close();
+		}catch(Exception ex){throw ex;}
+		
+		//demande station
+		System.out.println("Entrez le numéro de la station voulue :");
+		numStation = sc.nextInt();
+		
+		query = "INSERT INTO ortizlu.reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
+				+ "VALUES(ortizlu.reservation_id.NEXTVAL, "
+				+ "TO_DATE('" + dateDebutLocation + "', 'dd/mm/yyyy'),"
+				+ "TO_DATE('" + dateFinLocation + "', 'dd/mm/yyyy'),"
+				+ numModeleVelo + ","
+				+ numStation + ","
+				+ userId + ")";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			Connexion.connexion().commit();
+			System.out.println("Votre réservation à bien été enregistrée !");
+			stmt.close();
+			rs.close();
+		}catch(Exception ex){throw ex;}
+		
+	}
+	
+	public static void annulerReservationVelo(int userId) throws Exception
+	{
+		int numResa;
+		//affiche les résa du user connecté
+		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
+				+ "FROM ortizlu.reservation "
+				+ "NATURAL JOIN ortizlu.modele "
+				+ "NATURAL JOIN ortizlu.station "
+				+ "WHERE uti_id = "+userId+ " ORDER BY res_id";
+		Statement stmt = null;
+		ResultSet rs = null;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Vos réservations :");
+			System.out.println("NUM| DATE_DEB |  DATE_FIN  |    DATE DE CREATION    | STATUT | MODELE VELO   |  ADRESSE STATION");
+			System.out.println("----------------------------------------------------------------------------------------------");
+			while(rs.next())
+			{
+				int res_id = rs.getInt(1);
+				System.out.print(res_id + " - ");
+				String res_deb = rs.getString(2);
+				System.out.print(res_deb.substring(0, 10) + " - ");
+				String res_fin = rs.getString(3);
+				System.out.print(res_fin.substring(0, 10) + " - ");
+				String res_crea = rs.getString(4);
+				System.out.print(res_crea + " - ");
+				String res_statut = rs.getString(5);
+				System.out.print(res_statut + " - ");
+				String mod_libelle = rs.getString(6);
+				System.out.print(mod_libelle + " - ");
+				String sta_adresse = rs.getString(7);
+				System.out.println(sta_adresse);
+			}
+			System.out.println();
+			stmt.close();
+			rs.close();
+		}catch(Exception ex){throw ex;}
+		
+		//demande station
+		System.out.println("Entrez le numéro de la réservation choisie :");
+		sc.reset();
+		numResa = sc.nextInt();
+		
+		query = "DELETE FROM ortizlu.reservation where res_id = " + numResa;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			Connexion.connexion().commit();
+			System.out.println("La réservation à bien été supprimée !");
+			stmt.close();
+			rs.close();
+		}catch(Exception ex){throw ex;}
+	}
 }
