@@ -7,7 +7,6 @@ import java.util.Date;
 import AccessBD.Connexion;
 
 public class Velo {
-	public static String schema = "maalexis.";
 
 	public static void AfficherVelos(int stationId) throws Exception
 	{
@@ -17,7 +16,7 @@ public class Velo {
 		
 		try
 		{
-			query = "SELECT * FROM " + schema + "velo NATURAL JOIN " + schema + " modele WHERE vel_id IN (SELECT vel_id FROM " + schema + "bornette WHERE sta_id = " + stationId + ")";
+			query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ")";
 			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -57,7 +56,7 @@ public class Velo {
 		
 		try
 		{
-			query = "SELECT * FROM " + schema + "velo NATURAL JOIN " + schema + " modele WHERE vel_id IN (SELECT vel_id FROM " + schema + "bornette WHERE sta_id = " + stationId + ") AND vel_etat = 'OK' AND vel_statut = 'associe'";
+			query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ") AND vel_etat = 'OK' AND vel_statut = 'associe'";
 			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -97,7 +96,7 @@ public class Velo {
 		
 		try
 		{
-			query = "UPDATE " + schema + "bornette SET vel_id = " + veloId + " WHERE bor_id = " + borneId;
+			query = "UPDATE " + Connexion.schemasBD + "bornette SET vel_id = " + veloId + " WHERE bor_id = " + borneId;
 			
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeUpdate(query);

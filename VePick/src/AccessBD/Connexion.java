@@ -8,7 +8,12 @@ import java.sql.SQLException;
 public class Connexion {
 
 	public final static String configurationFile = "src/AccessBD/DB.properties";
-	public final static String schemasBD = "ortizlu";
+	/** 
+	 * A modifier si besoin
+	 * <br>
+	 * <b>/!\ Le point à la fin du schema est déjà présent /!\</b> 
+	 **/
+	public final static String schemasBD = "ortizlu.";
 	private static Connection connexion = null;
 	
 	public static Connection connexion() throws IOException, ClassNotFoundException, SQLException

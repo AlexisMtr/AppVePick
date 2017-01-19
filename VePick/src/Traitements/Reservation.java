@@ -1,10 +1,7 @@
 package Traitements;
 
-import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
@@ -17,15 +14,15 @@ public class Reservation {
 		int numModeleVelo;
 		String dateDebutLocation, dateFinLocation;
 		int numStation;
-		//affiche les modèles de vélo
-		String query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + ".velo NATURAL JOIN ortizlu.modele ORDER BY mod_id";
+		//affiche les modï¿½les de vï¿½lo
+		String query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
 		Statement stmt = null;
 		ResultSet rs = null;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
-			System.out.println("Liste des modèles de velos disponibles :");
+			System.out.println("Liste des modï¿½les de velos disponibles :");
 			while(rs.next())
 			{
 				int idMod = rs.getInt(1);
@@ -38,19 +35,19 @@ public class Reservation {
 			rs.close();
 		}catch(Exception ex){throw ex;}
 		
-		//demande le modèle de vélo
-		System.out.println("Entrez le numéro du modèle de vélo :");
+		//demande le modï¿½le de vï¿½lo
+		System.out.println("Entrez le numï¿½ro du modï¿½le de vï¿½lo :");
 		numModeleVelo = sc.nextInt();
 		
-		//demande les périodes (début et fin)
-		System.out.println("Entrez une date de début location (JJ/MM/YYYY)");
+		//demande les pï¿½riodes (dï¿½but et fin)
+		System.out.println("Entrez une date de dï¿½but location (JJ/MM/YYYY)");
 		sc.nextLine();
 		dateDebutLocation = sc.nextLine();
 		System.out.println("Entrez une date de fin location (JJ/MM/YYYY)");
 		dateFinLocation = sc.nextLine();
 		
 		//affiche toutes les stations
-		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + ".station";
+		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + "station";
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -69,11 +66,11 @@ public class Reservation {
 		}catch(Exception ex){throw ex;}
 		
 		//demande station
-		System.out.println("Entrez le numéro de la station voulue :");
+		System.out.println("Entrez le numï¿½ro de la station voulue :");
 		numStation = sc.nextInt();
 		
-		query = "INSERT INTO " + Connexion.schemasBD + ".reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
-				+ "VALUES(" + Connexion.schemasBD + ".reservation_id.NEXTVAL, "
+		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
+				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
 				+ "TO_DATE('" + dateDebutLocation + "', 'dd/mm/yyyy'),"
 				+ "TO_DATE('" + dateFinLocation + "', 'dd/mm/yyyy'),"
 				+ numModeleVelo + ","
@@ -84,7 +81,7 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
-			System.out.println("Votre réservation à bien été enregistrée !");
+			System.out.println("Votre rï¿½servation ï¿½ bien ï¿½tï¿½ enregistrï¿½e !");
 			stmt.close();
 			rs.close();
 		}catch(Exception ex){throw ex;}
@@ -94,11 +91,11 @@ public class Reservation {
 	public static void annulerReservationVelo(int userId) throws Exception
 	{
 		int numResa;
-		//affiche les résa du user connecté
+		//affiche les rï¿½sa du user connectï¿½
 		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
-				+ "FROM " + Connexion.schemasBD + ".reservation "
-				+ "NATURAL JOIN " + Connexion.schemasBD + ".modele "
-				+ "NATURAL JOIN " + Connexion.schemasBD + ".station "
+				+ "FROM " + Connexion.schemasBD + "reservation "
+				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
+				+ "NATURAL JOIN " + Connexion.schemasBD + "station "
 				+ "WHERE uti_id = "+userId+ " ORDER BY res_id";
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -106,7 +103,7 @@ public class Reservation {
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
-			System.out.println("Vos réservations :");
+			System.out.println("Vos rï¿½servations :");
 			System.out.println("NUM| DATE_DEB |  DATE_FIN  |    DATE DE CREATION    | STATUT | MODELE VELO   |  ADRESSE STATION");
 			System.out.println("----------------------------------------------------------------------------------------------");
 			while(rs.next())
@@ -132,17 +129,17 @@ public class Reservation {
 		}catch(Exception ex){throw ex;}
 		
 		//demande station
-		System.out.println("Entrez le numéro de la réservation choisie :");
+		System.out.println("Entrez le numï¿½ro de la rï¿½servation choisie :");
 		sc.reset();
 		numResa = sc.nextInt();
 		
-		query = "DELETE FROM " + Connexion.schemasBD + ".reservation where res_id = " + numResa;
+		query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
-			System.out.println("La réservation à bien été supprimée !");
+			System.out.println("La rï¿½servation ï¿½ bien ï¿½tï¿½ supprimï¿½e !");
 			stmt.close();
 			rs.close();
 		}catch(Exception ex){throw ex;}

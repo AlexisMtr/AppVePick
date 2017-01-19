@@ -1,9 +1,6 @@
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
-import AccessBD.Connexion;
 import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Velo;
@@ -12,6 +9,7 @@ public class UserApp {
 
 	public static int userId;
 	public static Scanner sc = new Scanner(System.in);
+	
 	public static void main(String[] args) {
 		userId = 2;
 		System.out.println("VePick !");
@@ -19,11 +17,12 @@ public class UserApp {
 		int choix = 0;
 		while(choix == 0)
 		{
-			System.out.println("Quelle interface voulez-vous lancer ?");
+			System.out.println("\nQuelle interface voulez-vous lancer ?");
 			System.out.println("1 - Interface Client");
 			System.out.println("2 - Interface Superviseur");
 			System.out.println("3 - Interface Conducteur");
-			System.out.println("4 - quitter !");
+			System.out.println("4 - Interface Scenario");
+			System.out.println("5 - quitter !");
 			
 			choix  = sc.nextInt();
 			try
@@ -40,6 +39,9 @@ public class UserApp {
 						choixMenuConducteur();
 						break;
 					case 4:
+						choixMenuScenario();
+						break;
+					case 5:
 						System.exit(0);
 						break;
 					default:
@@ -57,21 +59,22 @@ public class UserApp {
 		sc.close();
 	}
 	
+	
 	public static void choixMenuClient()
 	{
 		boolean sortir = false;
 		int choix = 0;
 		while(choix == 0)
 		{
-			System.out.println("[CLIENT] Que voulez vous faire ?");
+			System.out.println("\n[CLIENT] Que voulez vous faire ?");
 			System.out.println("1 - S'abonner (1 an)");
 			System.out.println("2 - Renouveller son abonnement (1 an)");
-			System.out.println("3 - Louer un vélo");
-			System.out.println("4 - Reserver un vélo");
-			System.out.println("5 - Annuler une réservation");
-			System.out.println("6 - Signaler une dégradation au départ");
-			System.out.println("7 - Signaler une dégradation à l'arrivé");
-			System.out.println("8 - Rendre un vélo");
+			System.out.println("3 - Louer un vï¿½lo");
+			System.out.println("4 - Reserver un vï¿½lo");
+			System.out.println("5 - Annuler une rï¿½servation");
+			System.out.println("6 - Signaler une dï¿½gradation au dï¿½part");
+			System.out.println("7 - Signaler une dï¿½gradation ï¿½ l'arrivï¿½");
+			System.out.println("8 - Rendre un vï¿½lo");
 			System.out.println("9 - sortir !");
 			
 			choix  = sc.nextInt();
@@ -122,13 +125,6 @@ public class UserApp {
 		}
 	}
 	
-	private static void abonnement() {
-		// demander Nom, Prenom, Sexe, Code, ...
-	}
-
-	private static void renouvellement(int utilisateurId) {
-		// verifier utilisateur et renouveller
-	}
 
 	public static void choixMenuSuperviseur()
 	{
@@ -136,7 +132,7 @@ public class UserApp {
 		int choix = 0;
 		while(choix == 0)
 		{
-			System.out.println("[SUPERVISEUR] Que voulez vous faire ?");
+			System.out.println("\n[SUPERVISEUR] Que voulez vous faire ?");
 			System.out.println("1 - Consulter les Routines");
 			System.out.println("2 - Modifier les Routines");
 			System.out.println("3 - Consulter les plages V+/V-");
@@ -198,7 +194,7 @@ public class UserApp {
 		int choix = 0;
 		while(choix == 0)
 		{
-			System.out.println("[CONDUCTEUR] Que voulez vous faire ?");
+			System.out.println("\n[CONDUCTEUR] Que voulez vous faire ?");
 			System.out.println("1 - Declarer un velo HS");
 			System.out.println("2 - Consulter ma routine");
 			System.out.println("3 - Valider/Notifier une tache");
@@ -241,8 +237,66 @@ public class UserApp {
 		}
 	}
 	
+
+	public static void choixMenuScenario()
+	{
+		boolean sortir = false;
+		int choix = 0;
+		while(choix == 0)
+		{
+			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
+			System.out.println("1 - Location en mÃªme temps");
+			System.out.println("2 - TODO");
+			System.out.println("3 - TODO");
+			System.out.println("4 - TODO");
+			System.out.println("5 - sortir !");
+			
+			choix  = sc.nextInt();
+			try
+			{
+				switch(choix)
+				{
+					case 1:
+						// TODO
+						break;
+					case 2:
+						// TODO
+						break;
+					case 3:
+						// TODO
+						break;
+					case 4:
+						// TODO
+						break;
+					case 5:
+						sortir = true;
+						break;
+					default:
+						break;
+				}
+			}
+			catch(Exception ex)
+			{
+				System.err.println(ex.getMessage());
+			}
+			
+			if (sortir)
+				break;
+			
+			choix = 0;
+		}
+	}
 	
 
+
+	private static void abonnement() {
+		// demander Nom, Prenom, Sexe, Code, ...
+	}
+
+	private static void renouvellement(int utilisateurId) {
+		// verifier utilisateur et renouveller
+	}
+	
 	private static void afficherVelos() {
 		try
 		{
@@ -287,6 +341,7 @@ public class UserApp {
 			System.err.println(ex.getMessage());
 		}
 	}
+	
 	public static void reserverVelo(int userId)
 	{
 		try {
@@ -295,6 +350,7 @@ public class UserApp {
 			e.printStackTrace();
 		}
 	}
+	
 	public static void annulerReservationVelo(int userId)
 	{
 		try {
@@ -303,14 +359,17 @@ public class UserApp {
 			e.printStackTrace();
 		}
 	}
+	
 	public static void signalerDepart()
 	{
 		
 	}
+	
 	public static void signalerArrivee()
 	{
 		
 	}
+	
 	public static void rendreVelo()
 	{
 		try
@@ -328,7 +387,7 @@ public class UserApp {
 			
 			int locationId = Location.VerifierLocation(password, userId, veloId);
 			if(locationId != 0)
-				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "€");
+				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "ï¿½");
 			else
 				System.err.println("Aucune locations trouvees");
 		}

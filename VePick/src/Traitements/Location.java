@@ -7,7 +7,6 @@ import java.util.Date;
 import AccessBD.Connexion;
 
 public class Location {
-	public static String schema = "maalexis.";
 
 	public static void LouerVelo(int veloId, int userId) throws Exception
 	{
@@ -17,7 +16,7 @@ public class Location {
 		
 		try
 		{
-			query = "INSERT INTO " + schema + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + schema + "location_id.nextval, "
+			query = "INSERT INTO " + Connexion.schemasBD + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + Connexion.schemasBD + "location_id.nextval, "
 					+ "SYSDATE, "
 					+ userId + ", "
 					+ veloId + ")";
@@ -44,7 +43,7 @@ public class Location {
 		
 		try
 		{
-			query = "SELECT * FROM " + schema + "Location";
+			query = "SELECT * FROM " + Connexion.schemasBD + "Location";
 			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -99,7 +98,7 @@ public class Location {
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
-			query = "SELECT vel_id FROM " + schema + "Location WHERE loc_id = " + locationId;
+			query = "SELECT vel_id FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 			rs = stmt.executeQuery(query);
 			if(rs.next())
 				veloId = rs.getInt("vel_id");
@@ -108,7 +107,7 @@ public class Location {
 			rs.close();
 			
 			stmt = Connexion.connexion().createStatement();
-			query = "UPDATE " + schema + "Bornette"
+			query = "UPDATE " + Connexion.schemasBD + "Bornette"
 					+ " SET vel_id = " + veloId
 					+ " WHERE bor_id = " + borneId;
 			int OK = stmt.executeUpdate(query);
@@ -117,7 +116,7 @@ public class Location {
 			if(OK == 1)
 			{
 				stmt = Connexion.connexion().createStatement();
-				query = "SELECT loc_montant FROM " + schema + "Location WHERE loc_id = " + locationId;
+				query = "SELECT loc_montant FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 				rs = stmt.executeQuery(query);
 				montant = rs.getDouble("loc_montant");
 			}
@@ -147,7 +146,7 @@ public class Location {
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
-			query = "SELECT uti_id FROM " + schema + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
+			query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
 			rs = stmt.executeQuery(query);
 			if(!rs.next())
 				isOk = false;
@@ -156,7 +155,7 @@ public class Location {
 			rs.close();
 			
 			stmt = Connexion.connexion().createStatement();
-			query = "SELECT loc_id FROM " + schema + "Location WHERE uti_id = " + userId + " AND vel_id = " + veloId + " AND loc_fin IS NULL";
+			query = "SELECT loc_id FROM " + Connexion.schemasBD + "Location WHERE uti_id = " + userId + " AND vel_id = " + veloId + " AND loc_fin IS NULL";
 			rs = stmt.executeQuery(query);
 			if(rs.next())
 				loc_id = rs.getInt("loc_id");
