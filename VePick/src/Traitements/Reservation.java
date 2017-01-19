@@ -1,5 +1,6 @@
 package Traitements;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -143,5 +144,55 @@ public class Reservation {
 			stmt.close();
 			rs.close();
 		}catch(Exception ex){throw ex;}
+	}
+	
+	//TODO A tester
+	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
+		int countResaChevauche = 0;
+		int countBornette = 0;
+		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb >"+dateDebut;
+		
+		Statement stmt = null;
+		ResultSet rs = null;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				if(dateDebut.before(rs.getDate("res_fin")) && dateFin.after(rs.getDate("res_deb"))) {
+					countResaChevauche ++;
+				}
+			}
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+			
+			query = "SELECT count(*) AS 'nbBornette' FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				countBornette = rs.getInt("nbBornette");
+			}
+			
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+			
+			if(countBornette != 0 && countResaChevauche < countBornette/2) {
+				//update validee
+				query = "UPDATE Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
+				stmt = Connexion.connexion().createStatement();
+				rs = stmt.executeQuery(query);
+			}
+		}
+		catch(Exception ex)
+		{
+			System.err.println("ERROR : " + ex.getMessage());
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+		
 	}
 }
