@@ -1,8 +1,6 @@
 package Traitements;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
@@ -14,12 +12,13 @@ public class Scenario {
 	{
 		String query = null;
 		Statement stmt = null;
-		int vel_id = 11;
+		int vel_id = 17;
 		
 		try
 		{
 			System.out.println("\n*** Lancement du scénario d'insertion de location*** ");
 			
+			sc.reset();
 			System.out.println("Appuyer sur la touche \"Entrée\" pour insérer la location...");
 			sc.nextLine();
 			
