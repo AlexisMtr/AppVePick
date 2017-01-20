@@ -89,7 +89,12 @@ public class Reservation {
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
 			System.out.println("Votre r�servation � bien �t� enregistr�e !");
-		}catch(Exception ex){throw ex;}
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
 		finally
 		{
 			if(stmt != null) stmt.close();
@@ -153,7 +158,12 @@ public class Reservation {
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
 			System.out.println("La r�servation � bien �t� supprim�e !");
-		}catch(Exception ex){throw ex;}
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
 		finally
 		{
 			if(stmt != null) stmt.close();
@@ -197,10 +207,12 @@ public class Reservation {
 				query = "UPDATE Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
+				Connexion.connexion().commit();
 			}
 		}
 		catch(Exception ex)
 		{
+			Connexion.connexion().rollback();
 			System.err.println("ERROR : " + ex.getMessage());
 		}
 		finally

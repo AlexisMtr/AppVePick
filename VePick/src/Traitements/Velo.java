@@ -14,10 +14,10 @@ public class Velo {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
+		query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele "
+				+ "WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ")";
 		try
 		{
-			query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ")";
-			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			while(rs.next())
@@ -39,7 +39,7 @@ public class Velo {
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			throw ex;
 		}
 		finally
 		{
@@ -54,10 +54,11 @@ public class Velo {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
+		query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele "
+				+ "WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ") "
+				+ "AND vel_etat = 'OK' AND vel_statut = 'associe'";
 		try
 		{
-			query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele WHERE vel_id IN (SELECT vel_id FROM " + Connexion.schemasBD + "bornette WHERE sta_id = " + stationId + ") AND vel_etat = 'OK' AND vel_statut = 'associe'";
-			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			while(rs.next())
@@ -79,7 +80,7 @@ public class Velo {
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			throw ex;
 		}
 		finally
 		{
@@ -92,18 +93,18 @@ public class Velo {
 	{
 		String query = null;
 		Statement stmt = null;
-		//ResultSet rs = null;
-		
+
+		query = "UPDATE " + Connexion.schemasBD + "bornette SET vel_id = " + veloId + " WHERE bor_id = " + borneId;
 		try
 		{
-			query = "UPDATE " + Connexion.schemasBD + "bornette SET vel_id = " + veloId + " WHERE bor_id = " + borneId;
-			
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeUpdate(query);
+			Connexion.connexion().commit();
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			Connexion.connexion().rollback();
+			throw ex;
 		}
 		finally
 		{
