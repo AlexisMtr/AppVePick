@@ -1,6 +1,7 @@
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Traitements.Degradation;
 import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Velo;
@@ -98,10 +99,10 @@ public class UserApp {
 						annulerReservationVelo(userId);
 						break;
 					case 6:
-						signalerDepart();
+						signalerDepart(userId);
 						break;
 					case 7:
-						signalerArrivee();
+						signalerArrivee(userId);
 						break;
 					case 8:
 						rendreVelo();
@@ -360,14 +361,24 @@ public class UserApp {
 		}
 	}
 	
-	public static void signalerDepart()
+	public static void signalerDepart(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,1);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
-	public static void signalerArrivee()
+	public static void signalerArrivee(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,0);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
 	public static void rendreVelo()
