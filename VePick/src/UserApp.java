@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import Traitements.Location;
 import Traitements.Reservation;
+import Traitements.Scenario;
 import Traitements.Velo;
 
 public class UserApp {
@@ -257,7 +258,7 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						// TODO
+						new Scenario().concurentInsertLocation(sc);
 						break;
 					case 2:
 						// TODO
