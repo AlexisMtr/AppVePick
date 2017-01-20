@@ -16,12 +16,13 @@ public class Reservation {
 	public static void reserverVelo(int userId) throws Exception
 	{
 		int numModeleVelo,numStation;
-		Date dateDebutLocation, dateFinLocation;
-		Calendar cal;
 		String[] dateDebutTab, heureDebutTab, dateFinTab, heureFinTab;
 		String query, buffer;
 		Statement stmt = null;
 		ResultSet rs = null;
+		Date dateDebutLocation, dateFinLocation;
+		Calendar cal;
+		
 		query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
 		stmt = Connexion.connexion().createStatement();
 		rs = stmt.executeQuery(query);
@@ -68,6 +69,7 @@ public class Reservation {
 		heureDebutTab = buffer.split("h");
 		cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1]),Integer.parseInt(dateDebutTab[0]),
 				Integer.parseInt(heureDebutTab[0]),Integer.parseInt(heureDebutTab[1]),00);
+		
 		dateDebutLocation = new Date(cal.getTimeInMillis());
 		
 		//fin
@@ -225,7 +227,9 @@ public class Reservation {
 	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
 		int countResaChevauche = 0;
 		int countBornette = 0;
-		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb >"+dateDebut;
+		SimpleDateFormat formatter = new SimpleDateFormat("d/MM/yyyy H:m:s");
+
+		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > '"+formatter.format(dateDebut)+"'";
 		
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -242,11 +246,11 @@ public class Reservation {
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 			
-			query = "SELECT count(*) AS 'nbBornette' FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
+			query = "SELECT count(*) FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
-				countBornette = rs.getInt("nbBornette");
+				countBornette = rs.getInt(1);
 			}
 			
 			if(stmt != null) stmt.close();
@@ -276,6 +280,7 @@ public class Reservation {
 	public static void UpdateFileAttente(int idReservation) throws Exception {
 		Date dateDebut, dateFin;
 		int idStation = 0;
+		
 		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		
 		Statement stmt = null;
