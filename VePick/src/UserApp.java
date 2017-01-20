@@ -1,9 +1,11 @@
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Traitements.Abonnement;
 import Traitements.Degradation;
 import Traitements.Location;
 import Traitements.Reservation;
+import Traitements.Routine;
 import Traitements.Scenario;
 import Traitements.Velo;
 
@@ -189,7 +191,6 @@ public class UserApp {
 		}
 	}
 	
-	
 	public static void choixMenuConducteur()
 	{
 		boolean sortir = false;
@@ -198,7 +199,7 @@ public class UserApp {
 		{
 			System.out.println("\n[CONDUCTEUR] Que voulez vous faire ?");
 			System.out.println("1 - Declarer un velo HS");
-			System.out.println("2 - Consulter ma routine");
+			System.out.println("2 - Consulter mes routines");
 			System.out.println("3 - Valider/Notifier une tache");
 			System.out.println("4 - Deplacer un velo");
 			System.out.println("5 - sortir !");
@@ -212,7 +213,7 @@ public class UserApp {
 						// TODO
 						break;
 					case 2:
-						// TODO
+						consulterRoutine(userId);
 						break;
 					case 3:
 						// TODO
@@ -291,12 +292,72 @@ public class UserApp {
 	
 
 
-	private static void abonnement() {
-		// demander Nom, Prenom, Sexe, Code, ...
+	private static void consulterRoutine(int conducteur) {
+		try
+		{
+			int nbRoutine = Routine.routinesConducteur(conducteur);
+			if(nbRoutine == 0)
+				System.out.println("Vous n'avez pas de routine");
+			else
+			{
+				System.out.println("Quelle routine consulter ?");
+				int routine = sc.nextInt();
+				Routine.visualiserRoutine(routine);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	private static void abonnement() {	
+		try
+		{
+			//sc.reset();
+			System.out.println("Votrz nom : ");
+			String nom = "Hugo";
+			System.out.println(nom);
+			System.out.println("Votre prenom : ");
+			String prenom = "Luc";
+			System.out.println(prenom);
+			System.out.println("Votre date de naissance (JJ/MM/AAAA) : ");
+			String naissance = "08/04/1995";
+			System.out.println(naissance);
+			System.out.println("Votre sexe (M|F) : ");
+			String sexe = "M";
+			System.out.println(sexe);
+			System.out.println("Votre adresse : ");
+			String adresse = "Rue de la Chimie";
+			System.out.println(adresse);
+			System.out.println("Votre code : ");
+			int code = 159951;
+			System.out.println(code);
+			System.out.println("Votre CB : ");
+			String CB = "1596547893215084";
+			System.out.println(CB);
+			
+			Abonnement.nouvelAbonne(nom, prenom, CB, sexe, naissance, adresse, code);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 
 	private static void renouvellement(int utilisateurId) {
-		// verifier utilisateur et renouveller
+		try
+		{
+			if(Abonnement.renouvellerAbonnement(utilisateurId))
+				System.out.println("Abonnement renouveller pour 1 an");
+			else
+				System.err.println("Impossible de renouveller l'abonnement");
+				
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	private static void afficherVelos() {
@@ -305,7 +366,7 @@ public class UserApp {
 			System.out.println("Quelle station ?");
 			int sta = sc.nextInt();
 			
-			Velo.AfficherVelos(sta);
+			Velo.afficherVelos(sta);
 		}
 		catch(Exception ex)
 		{
@@ -331,7 +392,7 @@ public class UserApp {
 			System.out.println("Quelle station ?");
 			int sta = sc.nextInt();
 
-			Velo.AfficherVelosDispo(sta);
+			Velo.afficherVelosDispo(sta);
 			System.out.println("Quel velo ?");
 			
 			int velo = sc.nextInt();
@@ -391,7 +452,7 @@ public class UserApp {
 			System.out.println("Sur quelle bornette ?");
 			int borneId = sc.nextInt();
 			
-			Velo.AssocierVelo(veloId, borneId);
+			Velo.associerVelo(veloId, borneId);
 			
 			System.out.println("Saisir votre MDP");
 			sc.nextLine();

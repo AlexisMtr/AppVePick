@@ -3,8 +3,9 @@ package Traitements;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
@@ -14,14 +15,22 @@ public class Reservation {
 	
 	public static void reserverVelo(int userId) throws Exception
 	{
-		int numModeleVelo;
-		Date dateDebutLocation;
-		Date dateFinLocation;
-		int numStation;
-		//affiche les modèles de vélo
-		String query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
+		int numModeleVelo,numStation;
+		String[] dateDebutTab, heureDebutTab, dateFinTab, heureFinTab;
+		String query, buffer;
 		Statement stmt = null;
 		ResultSet rs = null;
+		Date dateDebutLocation, dateFinLocation;
+		Calendar cal;
+		
+		query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
+		stmt = Connexion.connexion().createStatement();
+		rs = stmt.executeQuery(query);
+		if(stmt != null) stmt.close();
+		if(rs != null) rs.close();
+		
+		//affiche les modèles de vélo
+		query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -49,13 +58,30 @@ public class Reservation {
 		//demande le modèle de vélo
 		System.out.println("Entrez le numéro du modèle de vélo :");
 		numModeleVelo = sc.nextInt();
+		sc.nextLine();
+		//demande les périodes		
+		//debut
+		System.out.println("Entrez une date de début de réservation (JJ/MM/AAAA)");
+		buffer = sc.nextLine();
+		dateDebutTab = buffer.split("/");
+		System.out.println("Entrez une heure de début de réservation (00h00)");
+		buffer = sc.nextLine();
+		heureDebutTab = buffer.split("h");
+		cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1]),Integer.parseInt(dateDebutTab[0]),
+				Integer.parseInt(heureDebutTab[0]),Integer.parseInt(heureDebutTab[1]),00);
 		
-		//demande les périodes (début et fin)
-		DateFormat df = new SimpleDateFormat("DD/MM/YYYY HH24:MI:SS");
-		System.out.println("Entrez une date et une heure de début de location (JJ/MM/YYYY HH24:MIN)");
-		dateDebutLocation = (Date)df.parse(sc.nextLine()+":00");
-		System.out.println("Entrez une date de fin location (JJ/MM/YYYY HH24:MIN)");
-		dateFinLocation = (Date)df.parse(sc.nextLine()+":00");
+		dateDebutLocation = new Date(cal.getTimeInMillis());
+		
+		//fin
+		System.out.println("Entrez une date de fin de réservation (JJ/MM/AAAA)");
+		buffer = sc.nextLine();
+		dateFinTab = buffer.split("/");
+		System.out.println("Entrez une heure de fin de réservation (00h00)");
+		buffer = sc.nextLine();
+		heureFinTab = buffer.split("h");
+		cal = new GregorianCalendar(Integer.parseInt(dateFinTab[2]),Integer.parseInt(dateFinTab[1]),Integer.parseInt(dateFinTab[0]),
+				Integer.parseInt(heureFinTab[0]),Integer.parseInt(heureFinTab[1]),00);
+		dateFinLocation = new Date(cal.getTimeInMillis());
 		
 		//affiche toutes les stations
 		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + "station";
@@ -89,8 +115,8 @@ public class Reservation {
 		
 		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
 				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
-				+ dateDebutLocation + ","
-				+ dateFinLocation + ","
+				+ "TO_DATE('"+dateDebutTab[0]+"/"+dateDebutTab[1]+"/"+dateDebutTab[2]+" "+heureDebutTab[0]+":"+heureDebutTab[1]+":00','DD/MM/YYYY HH24:MI:SS'),"
+				+ "TO_DATE('"+dateFinTab[0]+"/"+dateFinTab[1]+"/"+dateFinTab[2]+" "+heureFinTab[0]+":"+heureFinTab[1]+":00', 'DD/MM/YYYY HH24:MI:SS'),"
 				+ numModeleVelo + ","
 				+ numStation + ","
 				+ userId + ")";
@@ -201,7 +227,9 @@ public class Reservation {
 	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
 		int countResaChevauche = 0;
 		int countBornette = 0;
-		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb >"+dateDebut;
+		SimpleDateFormat formatter = new SimpleDateFormat("d/MM/yyyy H:m:s");
+
+		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > '"+formatter.format(dateDebut)+"'";
 		
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -218,11 +246,11 @@ public class Reservation {
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 			
-			query = "SELECT count(*) AS 'nbBornette' FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
+			query = "SELECT count(*) FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
-				countBornette = rs.getInt("nbBornette");
+				countBornette = rs.getInt(1);
 			}
 			
 			if(stmt != null) stmt.close();
@@ -252,6 +280,7 @@ public class Reservation {
 	public static void UpdateFileAttente(int idReservation) throws Exception {
 		Date dateDebut, dateFin;
 		int idStation = 0;
+		
 		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		
 		Statement stmt = null;

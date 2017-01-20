@@ -8,7 +8,7 @@ import AccessBD.Connexion;
 
 public class Velo {
 
-	public static void AfficherVelos(int stationId) throws Exception
+	public static void afficherVelos(int stationId) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -48,7 +48,7 @@ public class Velo {
 		}
 	}
 	
-	public static void AfficherVelosDispo(int stationId) throws Exception
+	public static void afficherVelosDispo(int stationId) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -89,7 +89,7 @@ public class Velo {
 		}
 	}
 	
-	public static void AssocierVelo(int veloId, int borneId) throws Exception
+	public static void associerVelo(int veloId, int borneId) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
