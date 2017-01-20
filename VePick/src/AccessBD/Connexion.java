@@ -26,6 +26,7 @@ public class Connexion {
 			DBAccesProperties dbAccess = new DBAccesProperties(configurationFile);
 			connexion = DriverManager.getConnection(dbAccess.getDBUrl(), dbAccess.getUsername(), dbAccess.getPassword());
 			connexion.setAutoCommit(false);
+			// TODO DATE complète
 
 		}
 		catch (Exception e)
@@ -33,5 +34,22 @@ public class Connexion {
 			e.printStackTrace();
 		}
 		return connexion;
+	}
+	
+	public static Connection connexionTemporaire(String username, String password) throws IOException, ClassNotFoundException, SQLException
+	{
+		Connection tempCo = null;
+		try
+		{
+			DBAccesProperties dbAccess = new DBAccesProperties(configurationFile);
+			tempCo = DriverManager.getConnection(dbAccess.getDBUrl(), username, password);
+			tempCo.setAutoCommit(false);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return tempCo;
 	}
 }
