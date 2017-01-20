@@ -49,7 +49,8 @@ public class Degradation {
 		}
 		
 		//degradation
-		System.out.println("Saississez votre commentaire :");
+		System.out.println("Saisissez votre commentaire :");
+		sc.nextLine();
 		commentaire = sc.nextLine();
 		System.out.println("Saississez le niveau de dégradation (1 à 5) :");
 		niveau = sc.nextInt();
