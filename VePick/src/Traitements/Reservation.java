@@ -32,9 +32,12 @@ public class Reservation {
 				System.out.println(libelleMod);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande le mod�le de v�lo
 		System.out.println("Entrez le num�ro du mod�le de v�lo :");
@@ -62,9 +65,12 @@ public class Reservation {
 				System.out.println(adresseSta);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande station
 		System.out.println("Entrez le num�ro de la station voulue :");
@@ -83,9 +89,12 @@ public class Reservation {
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
 			System.out.println("Votre r�servation � bien �t� enregistr�e !");
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 	}
 	
@@ -125,9 +134,12 @@ public class Reservation {
 				System.out.println(sta_adresse);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande station
 		System.out.println("Entrez le num�ro de la r�servation choisie :");
@@ -141,9 +153,12 @@ public class Reservation {
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
 			System.out.println("La r�servation � bien �t� supprim�e !");
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 	}
 	
 	//TODO A tester
