@@ -1,5 +1,4 @@
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.Scanner;
 
 import Traitements.Abonnement;
@@ -8,7 +7,6 @@ import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Scenario;
 import Traitements.Velo;
-import oracle.sql.DATE;
 
 public class UserApp {
 
@@ -103,7 +101,7 @@ public class UserApp {
 						annulerReservationVelo(userId);
 						break;
 					case 6:
-						signalerDepart();
+						signalerDepart(userId);
 						break;
 					case 7:
 						signalerArrivee(userId);
@@ -320,8 +318,6 @@ public class UserApp {
 			String CB = "1596547893215084";
 			System.out.println(CB);
 			
-			//System.out.println(nom + prenom + CB + sexe + naissance + adresse + code);
-			
 			Abonnement.NouvelAbonne(nom, prenom, CB, sexe, naissance, adresse, code);
 		}
 		catch(Exception ex)
@@ -331,7 +327,18 @@ public class UserApp {
 	}
 
 	private static void renouvellement(int utilisateurId) {
-		// verifier utilisateur et renouveller
+		try
+		{
+			if(Abonnement.RenouvellerAbonnement(utilisateurId))
+				System.out.println("Abonnement renouveller pour 1 an");
+			else
+				System.err.println("Impossible de renouveller l'abonnement");
+				
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	private static void afficherVelos() {
