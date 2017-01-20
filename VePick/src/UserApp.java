@@ -80,7 +80,8 @@ public class UserApp {
 			System.out.println("6 - Signaler une d�gradation au d�part");
 			System.out.println("7 - Signaler une d�gradation � l'arriv�");
 			System.out.println("8 - Rendre un v�lo");
-			System.out.println("9 - sortir !");
+			System.out.println("9 - Non Inscrit (pour test)");
+			System.out.println("10 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -112,6 +113,9 @@ public class UserApp {
 						rendreVelo();
 						break;
 					case 9:
+						utilisateurNonAbonne();
+						break;
+					case 10:
 						sortir = true;
 						break;
 					default:
@@ -130,6 +134,13 @@ public class UserApp {
 		}
 	}
 	
+
+	private static void utilisateurNonAbonne() throws Exception {
+		System.out.println("Votre CB : ");
+		String CB = sc.next();
+		System.out.println("Votre MDP : " + Abonnement.nouvelUtilisateurNonAbonne(CB));
+	}
+
 
 	public static void choixMenuSuperviseur()
 	{
