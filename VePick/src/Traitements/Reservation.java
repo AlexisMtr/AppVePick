@@ -67,7 +67,7 @@ public class Reservation {
 		System.out.println("Entrez une heure de début de réservation (00h00)");
 		buffer = sc.nextLine();
 		heureDebutTab = buffer.split("h");
-		cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1]),Integer.parseInt(dateDebutTab[0]),
+		cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1])-1,Integer.parseInt(dateDebutTab[0]),
 				Integer.parseInt(heureDebutTab[0]),Integer.parseInt(heureDebutTab[1]),00);
 		
 		dateDebutLocation = new Date(cal.getTimeInMillis());
@@ -79,7 +79,7 @@ public class Reservation {
 		System.out.println("Entrez une heure de fin de réservation (00h00)");
 		buffer = sc.nextLine();
 		heureFinTab = buffer.split("h");
-		cal = new GregorianCalendar(Integer.parseInt(dateFinTab[2]),Integer.parseInt(dateFinTab[1]),Integer.parseInt(dateFinTab[0]),
+		cal = new GregorianCalendar(Integer.parseInt(dateFinTab[2]),Integer.parseInt(dateFinTab[1])-1,Integer.parseInt(dateFinTab[0]),
 				Integer.parseInt(heureFinTab[0]),Integer.parseInt(heureFinTab[1]),00);
 		dateFinLocation = new Date(cal.getTimeInMillis());
 		
@@ -223,13 +223,10 @@ public class Reservation {
 		}
 	}
 	
-	//TODO A tester
 	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
 		int countResaChevauche = 0;
 		int countBornette = 0;
-		SimpleDateFormat formatter = new SimpleDateFormat("d/MM/yyyy H:m:s");
-
-		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > '"+formatter.format(dateDebut)+"'";
+		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > SYSDATE AND res_statut ='validee'";
 		
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -259,9 +256,13 @@ public class Reservation {
 			if(countBornette != 0 && countResaChevauche < countBornette/2) {
 				//update validée
 				query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
+				System.out.println("La réservation a été validée");
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				Connexion.connexion().commit();
+			}
+			else {
+				System.out.println("La réservation a été mise sur liste d'attente");
 			}
 		}
 		catch(Exception e)
