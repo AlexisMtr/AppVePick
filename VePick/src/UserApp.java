@@ -1,10 +1,14 @@
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 
+import Traitements.Abonnement;
+import Traitements.Degradation;
 import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Scenario;
 import Traitements.Velo;
+import oracle.sql.DATE;
 
 public class UserApp {
 
@@ -102,7 +106,7 @@ public class UserApp {
 						signalerDepart();
 						break;
 					case 7:
-						signalerArrivee();
+						signalerArrivee(userId);
 						break;
 					case 8:
 						rendreVelo();
@@ -290,8 +294,40 @@ public class UserApp {
 	
 
 
-	private static void abonnement() {
-		// demander Nom, Prenom, Sexe, Code, ...
+	private static void abonnement() {	
+		try
+		{
+			//sc.reset();
+			System.out.println("Votrz nom : ");
+			String nom = "Hugo";
+			System.out.println(nom);
+			System.out.println("Votre prenom : ");
+			String prenom = "Luc";
+			System.out.println(prenom);
+			System.out.println("Votre date de naissance (JJ/MM/AAAA) : ");
+			String naissance = "08/04/1995";
+			System.out.println(naissance);
+			System.out.println("Votre sexe (M|F) : ");
+			String sexe = "M";
+			System.out.println(sexe);
+			System.out.println("Votre adresse : ");
+			String adresse = "Rue de la Chimie";
+			System.out.println(adresse);
+			System.out.println("Votre code : ");
+			int code = 159951;
+			System.out.println(code);
+			System.out.println("Votre CB : ");
+			String CB = "1596547893215084";
+			System.out.println(CB);
+			
+			//System.out.println(nom + prenom + CB + sexe + naissance + adresse + code);
+			
+			Abonnement.NouvelAbonne(nom, prenom, CB, sexe, naissance, adresse, code);
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 
 	private static void renouvellement(int utilisateurId) {
@@ -361,14 +397,24 @@ public class UserApp {
 		}
 	}
 	
-	public static void signalerDepart()
+	public static void signalerDepart(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,1);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
-	public static void signalerArrivee()
+	public static void signalerArrivee(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,0);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
 	public static void rendreVelo()
