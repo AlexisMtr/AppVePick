@@ -3,6 +3,8 @@ package Traitements;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
@@ -13,9 +15,10 @@ public class Reservation {
 	public static void reserverVelo(int userId) throws Exception
 	{
 		int numModeleVelo;
-		String dateDebutLocation, dateFinLocation;
+		Date dateDebutLocation;
+		Date dateFinLocation;
 		int numStation;
-		//affiche les mod�les de v�lo
+		//affiche les modèles de vélo
 		String query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -23,7 +26,7 @@ public class Reservation {
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
-			System.out.println("Liste des mod�les de velos disponibles :");
+			System.out.println("Liste des modèles de velos disponibles :");
 			while(rs.next())
 			{
 				int idMod = rs.getInt(1);
@@ -32,20 +35,20 @@ public class Reservation {
 				System.out.println(libelleMod);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}catch(Exception ex){throw ex;}
 		
-		//demande le mod�le de v�lo
-		System.out.println("Entrez le num�ro du mod�le de v�lo :");
+		//demande le modèle de vélo
+		System.out.println("Entrez le numéro du modèle de vélo :");
 		numModeleVelo = sc.nextInt();
 		
-		//demande les p�riodes (d�but et fin)
-		System.out.println("Entrez une date de d�but location (JJ/MM/YYYY)");
-		sc.nextLine();
-		dateDebutLocation = sc.nextLine();
-		System.out.println("Entrez une date de fin location (JJ/MM/YYYY)");
-		dateFinLocation = sc.nextLine();
+		//demande les périodes (début et fin)
+		DateFormat df = new SimpleDateFormat("DD/MM/YYYY HH24:MI:SS");
+		System.out.println("Entrez une date et une heure de début de location (JJ/MM/YYYY HH24:MIN)");
+		dateDebutLocation = (Date)df.parse(sc.nextLine()+":00");
+		System.out.println("Entrez une date de fin location (JJ/MM/YYYY HH24:MIN)");
+		dateFinLocation = (Date)df.parse(sc.nextLine()+":00");
 		
 		//affiche toutes les stations
 		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + "station";
@@ -67,13 +70,13 @@ public class Reservation {
 		}catch(Exception ex){throw ex;}
 		
 		//demande station
-		System.out.println("Entrez le num�ro de la station voulue :");
+		System.out.println("Entrez le numéro de la station voulue :");
 		numStation = sc.nextInt();
 		
 		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
 				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
-				+ "TO_DATE('" + dateDebutLocation + "', 'dd/mm/yyyy'),"
-				+ "TO_DATE('" + dateFinLocation + "', 'dd/mm/yyyy'),"
+				+ dateDebutLocation + ","
+				+ dateFinLocation + ","
 				+ numModeleVelo + ","
 				+ numStation + ","
 				+ userId + ")";
@@ -82,14 +85,26 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
-			System.out.println("Votre r�servation � bien �t� enregistr�e !");
-			stmt.close();
-			rs.close();
+			System.out.println("Votre réservation a bien été enregistrée !");
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+			
+			query ="SELECT " + Connexion.schemasBD + "reservation_id.CURRVAL FROM dual";
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				ValidationReservation(rs.getInt(1),dateDebutLocation,dateFinLocation,numStation);
+			}
 		}
 		catch(Exception ex)
 		{
 			Connexion.connexion().rollback();
 			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}
 		
 	}
@@ -97,7 +112,7 @@ public class Reservation {
 	public static void annulerReservationVelo(int userId) throws Exception
 	{
 		int numResa;
-		//affiche les r�sa du user connect�
+		//affiche les résa du user connecté
 		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
 				+ "FROM " + Connexion.schemasBD + "reservation "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
@@ -109,7 +124,7 @@ public class Reservation {
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
-			System.out.println("Vos r�servations :");
+			System.out.println("Vos réservations :");
 			System.out.println("NUM| DATE_DEB |  DATE_FIN  |    DATE DE CREATION    | STATUT | MODELE VELO   |  ADRESSE STATION");
 			System.out.println("----------------------------------------------------------------------------------------------");
 			while(rs.next())
@@ -130,8 +145,8 @@ public class Reservation {
 				System.out.println(sta_adresse);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}catch(Exception ex){throw ex;}
 		
 		//demande station
@@ -139,20 +154,23 @@ public class Reservation {
 		sc.reset();
 		numResa = sc.nextInt();
 		
-		query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa;
 		try
 		{
+			Reservation.UpdateFileAttente(numResa);
+			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
-			System.out.println("La r�servation � bien �t� supprim�e !");
-			stmt.close();
-			rs.close();
-		}
-		catch(Exception ex)
-		{
+			System.out.println("La réservation a bien été supprimée !");
+
+		} catch(Exception e) {
 			Connexion.connexion().rollback();
-			throw ex;
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}
 	}
 	
@@ -188,8 +206,8 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			if(countBornette != 0 && countResaChevauche < countBornette/2) {
-				//update validee
-				query = "UPDATE Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
+				//update validée
+				query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				Connexion.connexion().commit();
@@ -205,6 +223,57 @@ public class Reservation {
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 		}
+	}
+	
+	//TODO A tester
+	public static void UpdateFileAttente(int idReservation) throws Exception {
+		Date dateDebut, dateFin;
+		int idStation = 0;
+		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		
+		Statement stmt = null;
+		ResultSet rs = null;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				dateDebut = rs.getDate("res_deb");
+				dateFin = rs.getDate("res_fin");
+				idStation = rs.getInt("sta_id");
+			}else {
+				throw(new Exception("La réservation n'existe pas"));
+			}
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+			
+			if(idStation != 0) {
+				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+"ORDER BY res_crea";
+				stmt = Connexion.connexion().createStatement();
+				rs = stmt.executeQuery(query);
+				
+				while(rs.next()) {
+					if(dateDebut.before(rs.getDate("res_fin")) && dateFin.after(rs.getDate("res_deb"))) {
+						query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+rs.getInt("res_id");
+						if(stmt != null) stmt.close();
+						if(rs != null) rs.close();
+						stmt = Connexion.connexion().createStatement();
+						rs = stmt.executeQuery(query);
+						Connexion.connexion().commit();
+						break;
+					}
+				}
+			}
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			System.err.println("ERROR : " + ex.getMessage());
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 	}
 }
