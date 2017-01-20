@@ -85,7 +85,12 @@ public class Reservation {
 			System.out.println("Votre r�servation � bien �t� enregistr�e !");
 			stmt.close();
 			rs.close();
-		}catch(Exception ex){throw ex;}
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
 		
 	}
 	
@@ -143,7 +148,12 @@ public class Reservation {
 			System.out.println("La r�servation � bien �t� supprim�e !");
 			stmt.close();
 			rs.close();
-		}catch(Exception ex){throw ex;}
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
 	}
 	
 	//TODO A tester
@@ -182,10 +192,12 @@ public class Reservation {
 				query = "UPDATE Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
+				Connexion.connexion().commit();
 			}
 		}
 		catch(Exception ex)
 		{
+			Connexion.connexion().rollback();
 			System.err.println("ERROR : " + ex.getMessage());
 		}
 		finally

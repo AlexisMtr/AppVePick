@@ -13,20 +13,22 @@ public class Location {
 		String query = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+
+		query = "INSERT INTO " + Connexion.schemasBD + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + Connexion.schemasBD + "location_id.nextval, "
+				+ "SYSDATE, "
+				+ userId + ", "
+				+ veloId + ")";
 		
 		try
 		{
-			query = "INSERT INTO " + Connexion.schemasBD + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + Connexion.schemasBD + "location_id.nextval, "
-					+ "SYSDATE, "
-					+ userId + ", "
-					+ veloId + ")";
-			
 			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);			
+			rs = stmt.executeQuery(query);	
+			Connexion.connexion().commit();
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			Connexion.connexion().rollback();
+			throw ex;
 		}
 		finally
 		{
@@ -41,9 +43,9 @@ public class Location {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
+		query = "SELECT * FROM " + Connexion.schemasBD + "Location";
 		try
 		{
-			query = "SELECT * FROM " + Connexion.schemasBD + "Location";
 			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -78,7 +80,7 @@ public class Location {
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			throw ex;
 		}
 		finally
 		{
@@ -95,10 +97,10 @@ public class Location {
 		Double montant = null;
 		int veloId = 0;
 		
+		query = "SELECT vel_id FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
-			query = "SELECT vel_id FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 			rs = stmt.executeQuery(query);
 			if(rs.next())
 				veloId = rs.getInt("vel_id");
@@ -119,11 +121,13 @@ public class Location {
 				query = "SELECT loc_montant FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 				rs = stmt.executeQuery(query);
 				montant = rs.getDouble("loc_montant");
+				Connexion.connexion().commit();
 			}
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			Connexion.connexion().rollback();
+			throw ex;
 		}
 		finally
 		{
@@ -142,11 +146,11 @@ public class Location {
 		ResultSet rs = null;
 		boolean isOk = true;
 		int loc_id = 0;
-		
+
+		query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
-			query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
 			rs = stmt.executeQuery(query);
 			if(!rs.next())
 				isOk = false;
@@ -167,7 +171,7 @@ public class Location {
 		}
 		catch(Exception ex)
 		{
-			System.err.println("ERROR : " + ex.getMessage());
+			throw ex;
 		}
 		finally
 		{
