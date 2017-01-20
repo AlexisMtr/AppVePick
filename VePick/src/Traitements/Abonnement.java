@@ -80,7 +80,7 @@ public class Abonnement {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		query = "CALL CreerNonAbonne(?);";
+		query = "CALL CreerNonAbonne(" + CB + ");";
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
