@@ -1,32 +1,34 @@
 package Traitements;
 
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Date;
 
 import AccessBD.Connexion;
 
 public class Abonnement {
 
-	public static int NouvelAbonne(String nom, String prenom, String CB, String sexe, Date naissance, String adresse, int code) throws Exception
+	public static int NouvelAbonne(String nom, String prenom, String CB, String sexe, String naissance, String adresse, int code) throws Exception
 	{
 		String query = null;
-		CallableStatement call = null;
+		Statement stmt = null;
 		
-		query = "CALL CreerAbonne(?, ?, ?, ?, ?, ?, ?);";
+		query = "{CALL " + Connexion.schemasBD + "CreerAbonne("
+				+ "'" + CB + "', "
+				+ code + ", "
+				+ "'" + nom + "', "
+				+ "'" + prenom + "', "
+				+ "TO_DATE('" + naissance + "', 'DD/MM/YYYY'), "
+				+ "'" + sexe + "', "
+				+ "'" + adresse + "')}";
+		
+		System.out.println("QUERY : " + query);
 		try
 		{
-			call = Connexion.connexion().prepareCall(query);
-			call.setString(1, CB);
-			call.setInt(2, code);
-			call.setString(3, nom);
-			call.setString(4, prenom);
-			call.setDate(5, (java.sql.Date) naissance);
-			call.setString(6,  sexe);
-			call.setString(7, adresse);
-			
-			call.executeQuery();
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeQuery(query);
 			
 			Connexion.connexion().commit();
 		}
@@ -37,7 +39,7 @@ public class Abonnement {
 		}
 		finally
 		{
-			if(call != null) call.close();
+			if(stmt != null) stmt.close();
 		}
 		
 		return 0;
@@ -51,6 +53,7 @@ public class Abonnement {
 		query = "UPDATE " + Connexion.schemasBD + "Abonne SET abo_expirationAbo = SYSDATE WHERE uti_id = " + idUser;
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeUpdate(query);
 			Connexion.connexion().commit();
@@ -77,6 +80,7 @@ public class Abonnement {
 		query = "CALL CreerNonAbonne(?);";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			call = Connexion.connexion().prepareCall(query);
 			call.setString(1, CB);
 			call.executeQuery();
