@@ -3,6 +3,7 @@ import java.util.Date;
 import java.util.Scanner;
 
 import Traitements.Abonnement;
+import Traitements.Degradation;
 import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Scenario;
@@ -105,7 +106,7 @@ public class UserApp {
 						signalerDepart();
 						break;
 					case 7:
-						signalerArrivee();
+						signalerArrivee(userId);
 						break;
 					case 8:
 						rendreVelo();
@@ -396,14 +397,24 @@ public class UserApp {
 		}
 	}
 	
-	public static void signalerDepart()
+	public static void signalerDepart(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,1);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
-	public static void signalerArrivee()
+	public static void signalerArrivee(int userId)
 	{
-		
+		try {
+			Degradation.signalerDegradation(userId,0);
+		} catch(Exception ex)
+		{
+			System.err.println(ex.getMessage());
+		}
 	}
 	
 	public static void rendreVelo()
