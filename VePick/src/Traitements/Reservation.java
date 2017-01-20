@@ -35,9 +35,17 @@ public class Reservation {
 				System.out.println(libelleMod);
 			}
 			System.out.println();
+<<<<<<< HEAD
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
+=======
+>>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande le modèle de vélo
 		System.out.println("Entrez le numéro du modèle de vélo :");
@@ -65,9 +73,12 @@ public class Reservation {
 				System.out.println(adresseSta);
 			}
 			System.out.println();
-			stmt.close();
-			rs.close();
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande station
 		System.out.println("Entrez le numéro de la station voulue :");
@@ -85,6 +96,7 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
+<<<<<<< HEAD
 			System.out.println("Votre réservation a bien été enregistrée !");
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
@@ -95,6 +107,9 @@ public class Reservation {
 			if(rs.next()) {
 				ValidationReservation(rs.getInt(1),dateDebutLocation,dateFinLocation,numStation);
 			}
+=======
+			System.out.println("Votre r�servation � bien �t� enregistr�e !");
+>>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
 		}
 		catch(Exception ex)
 		{
@@ -145,9 +160,17 @@ public class Reservation {
 				System.out.println(sta_adresse);
 			}
 			System.out.println();
+<<<<<<< HEAD
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
+=======
+>>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
 		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 		
 		//demande station
 		System.out.println("Entrez le num�ro de la r�servation choisie :");
@@ -161,11 +184,23 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
+<<<<<<< HEAD
 			System.out.println("La réservation a bien été supprimée !");
 
 		} catch(Exception e) {
+=======
+			System.out.println("La r�servation � bien �t� supprim�e !");
+		}
+		catch(Exception ex)
+		{
+>>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
 			Connexion.connexion().rollback();
 			e.printStackTrace();
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}
 		finally
 		{
