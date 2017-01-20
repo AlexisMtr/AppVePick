@@ -13,7 +13,7 @@ public class Station {
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		query = "SELECT * FROM " + Connexion.schemasBD + "Station;";
+		query = "SELECT * FROM " + Connexion.schemasBD + "Station";
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -77,6 +77,35 @@ public class Station {
 			while(rs.next())
 				System.out.println("- Nb Velo HS : " + rs.getInt(1));
 		
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if(rs != null) rs.close();
+			if(stmt != null) stmt.close();
+		}
+	}
+
+	public static void afficherPlages() throws Exception {
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "SELECT * FROM " + Connexion.schemasBD + "Seuil";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+				System.out.println("- Plage "
+						+ rs.getInt("pla_deb") + "H "
+						+ "à "
+						+ rs.getInt("pla_fin") + "H : "
+						+ " seuil V+ =" + rs.getInt("seuilVplus")
+						+ " seuil V- =" + rs.getInt("seuilVMoins"));
 		}
 		catch(Exception ex)
 		{

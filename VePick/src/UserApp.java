@@ -7,6 +7,7 @@ import Traitements.Location;
 import Traitements.Reservation;
 import Traitements.Routine;
 import Traitements.Scenario;
+import Traitements.Station;
 import Traitements.Velo;
 
 public class UserApp {
@@ -141,10 +142,8 @@ public class UserApp {
 			System.out.println("2 - Supprimer une routines");
 			System.out.println("3 - Consulter les plages V+/V-");
 			System.out.println("4 - Modifier les plages V+/V-");
-			System.out.println("5 - Voir les velos par stations");
-			System.out.println("6 - Voir les velos endommages par station");
-			System.out.println("7 - Voir les places disponibles par station");
-			System.out.println("8 - sortir !");
+			System.out.println("5 - Voir les stats par stations");
+			System.out.println("6 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -158,21 +157,14 @@ public class UserApp {
 						supprimerRoutine();
 						break;
 					case 3:
-						// TODO
+						consulterPlages();
 						break;
 					case 4:
-						// TODO
 						break;
 					case 5:
-						// TODO
+						afficherStatStation();
 						break;
 					case 6:
-						// TODO
-						break;
-					case 7:
-						// TODO
-						break;
-					case 8:
 						sortir = true;
 						break;
 					default:
@@ -190,7 +182,24 @@ public class UserApp {
 			choix = 0;
 		}
 	}
-	
+
+
+	private static void consulterPlages() throws Exception {
+		Station.afficherStation();
+		System.out.println("Quelle station voulez-vous ?");
+		int idStation = sc.nextInt();
+		Station.afficherPlages();
+	}
+
+
+	private static void afficherStatStation() throws Exception {
+		Station.afficherStation();
+		System.out.println("Quelle station voulez-vous ?");
+		int idStation = sc.nextInt();
+		Station.statsStation(idStation);
+	}
+
+
 	private static void supprimerRoutine() throws Exception {
 		int rou_id_choix;
 		Routine.afficherAllRoutines();
