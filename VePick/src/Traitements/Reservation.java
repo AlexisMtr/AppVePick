@@ -301,7 +301,7 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			if(idStation != 0) {
-				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+"ORDER BY res_crea";
+				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE res_deb > SYSDATE AND sta_id ="+idStation+"ORDER BY res_crea";
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				
