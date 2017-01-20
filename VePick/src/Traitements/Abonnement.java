@@ -9,7 +9,7 @@ import AccessBD.Connexion;
 
 public class Abonnement {
 
-	public static int NouvelAbonne(String nom, String prenom, String CB, String sexe, String naissance, String adresse, int code) throws Exception
+	public static int nouvelAbonne(String nom, String prenom, String CB, String sexe, String naissance, String adresse, int code) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -45,7 +45,7 @@ public class Abonnement {
 		return 0;
 	}
 	
-	public static boolean RenouvellerAbonnement(int idUser) throws Exception
+	public static boolean renouvellerAbonnement(int idUser) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -72,7 +72,7 @@ public class Abonnement {
 		return update;
 	}
 	
-	public static int NouvelUtilisateurNonAbonne(String CB) throws Exception
+	public static int nouvelUtilisateurNonAbonne(String CB) throws Exception
 	{
 		int password = 0;
 		String query = null;
