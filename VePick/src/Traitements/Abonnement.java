@@ -45,17 +45,18 @@ public class Abonnement {
 		return 0;
 	}
 	
-	public static void RenouvellerAbonnement(int idUser) throws Exception
+	public static boolean RenouvellerAbonnement(int idUser) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
+		boolean update = false;
 		
 		query = "UPDATE " + Connexion.schemasBD + "Abonne SET abo_expirationAbo = SYSDATE WHERE uti_id = " + idUser;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
-			stmt.executeUpdate(query);
+			update = stmt.executeUpdate(query) == 1 ? true : false;
 			Connexion.connexion().commit();
 		}
 		catch(Exception ex)
@@ -67,6 +68,8 @@ public class Abonnement {
 		{
 			if(stmt != null) stmt.close();
 		}
+		
+		return update;
 	}
 	
 	public static int NouvelUtilisateurNonAbonne(String CB) throws Exception
