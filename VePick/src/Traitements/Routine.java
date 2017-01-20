@@ -1,14 +1,18 @@
 package Traitements;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.Scanner;
 
 import AccessBD.Connexion;
 
 public class Routine {
 
+	static Scanner sc = new Scanner(System.in);
 	public static void visualiserRoutine(int rou_id) throws Exception
 	{
 		String query = null;
@@ -137,4 +141,70 @@ public class Routine {
 		}
 		
 	}
+	
+	public static void afficherAllRoutines() throws Exception
+	{
+		// affiche toutes les routines
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		int idRoutine;
+		String date, nomConducteur, Immat;
+		
+		query = "SELECT rou_id, rou_date, con_nom, veh_immat FROM " + Connexion.schemasBD + "Routine NATURAL JOIN " + Connexion.schemasBD + "Conducteur ORDER BY rou_id";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Toutes les routine :");
+			System.out.println("Numéro | Date | Conducteur | Immatriculation");
+			while(rs.next())
+			{
+				idRoutine = rs.getInt(1);
+				System.out.print(idRoutine + " - ");
+				date = rs.getString(2);
+				System.out.print(date + " - ");
+				nomConducteur = rs.getString(3);
+				System.out.print(nomConducteur + " - ");
+				Immat = rs.getString(4);
+				System.out.println(Immat);
+			}
+			System.out.println();
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+	}
+
+	public static void supprimerTacheDeRoutine(int rou_id) throws Exception {
+		Statement stmt= null;
+		
+		String query1 = "DELETE FROM " + Connexion.schemasBD + "tache WHERE rou_id=" + rou_id;
+		String query2 = "DELETE FROM " + Connexion.schemasBD + "routine WHERE rou_id=" + rou_id;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			//supprimer les tâches de la routine
+			stmt.executeQuery(query1);
+			stmt.executeQuery(query2);
+			Connexion.connexion().commit();
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+		}
+		System.out.println("La routine à bien été supprimée !");
+	}
+	
 }

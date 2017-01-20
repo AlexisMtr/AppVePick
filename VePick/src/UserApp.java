@@ -138,7 +138,7 @@ public class UserApp {
 		{
 			System.out.println("\n[SUPERVISEUR] Que voulez vous faire ?");
 			System.out.println("1 - Consulter les Routines");
-			System.out.println("2 - Modifier les Routines");
+			System.out.println("2 - Supprimer une routines");
 			System.out.println("3 - Consulter les plages V+/V-");
 			System.out.println("4 - Modifier les plages V+/V-");
 			System.out.println("5 - Voir les velos par stations");
@@ -152,10 +152,10 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						// TODO
+						consulterRoutines();
 						break;
 					case 2:
-						// TODO
+						supprimerRoutine();
 						break;
 					case 3:
 						// TODO
@@ -191,6 +191,33 @@ public class UserApp {
 		}
 	}
 	
+	private static void supprimerRoutine() throws Exception {
+		int rou_id_choix;
+		Routine.afficherAllRoutines();
+		
+		//demande routine id
+		System.out.println("Numéro choisi");
+		rou_id_choix = sc.nextInt();
+		
+		//supprimer tâches de routine
+		Routine.supprimerTacheDeRoutine(rou_id_choix);
+	}
+
+
+	private static void consulterRoutines() throws Exception {
+		int rou_id_choix;
+		Routine.afficherAllRoutines();
+		
+		//demande routine id
+		System.out.println("Numéro choisi");
+		rou_id_choix = sc.nextInt();
+		
+		//visualiserRoutine
+		Routine.visualiserRoutine(rou_id_choix);
+		
+	}
+
+
 	public static void choixMenuConducteur()
 	{
 		boolean sortir = false;
