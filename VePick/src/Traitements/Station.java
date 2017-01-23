@@ -1,6 +1,8 @@
 package Traitements;
 
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import AccessBD.Connexion;
@@ -89,23 +91,27 @@ public class Station {
 		}
 	}
 
-	public static void afficherPlages() throws Exception {
+	public static int afficherPlages(int idStation) throws Exception {
 		String query = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int nb = 0;
 		
-		query = "SELECT * FROM " + Connexion.schemasBD + "Seuil";
+		query = "SELECT * FROM " + Connexion.schemasBD + "Seuil WHERE sta_id=" + idStation;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			while(rs.next())
+			{
+				nb++;
 				System.out.println("- Plage "
 						+ rs.getInt("pla_deb") + "H "
 						+ "à "
 						+ rs.getInt("pla_fin") + "H : "
 						+ " seuil V+ =" + rs.getInt("seuilVplus")
 						+ " seuil V- =" + rs.getInt("seuilVMoins"));
+			}
 		}
 		catch(Exception ex)
 		{
@@ -114,6 +120,55 @@ public class Station {
 		finally
 		{
 			if(rs != null) rs.close();
+			if(stmt != null) stmt.close();
+		}
+		return nb;
+	}
+
+	public static void modifierPlageHoraire(int idStation, int plageDeb, int plageFin, int seuilVmoins, int seuilVplus) throws Exception{
+		
+		String query = null;
+		Statement stmt = null;
+		
+		query = "UPDATE " + Connexion.schemasBD + "Seuil SET seuilVplus=" + seuilVplus + ", seuilVmoins=" + seuilVmoins + " WHERE sta_id=" + idStation + " AND pla_deb=" + plageDeb + " AND pla_fin=" + plageFin;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeQuery(query);
+			Connexion.connexion().commit();
+			System.out.println("Seuil de la plage horaire modifié !");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+		}
+	}
+
+	public static void ajouterSeuil(int idStation, int plageDeb, int plageFin, int seuilVmoins, int seuilVplus) throws Exception{
+		
+		String query = null;
+		Statement stmt = null;
+		
+		query = "INSERT INTO " + Connexion.schemasBD + "Seuil VALUES(" + seuilVmoins + ", " + seuilVplus + ", " + idStation + ", " + plageDeb + ", " + plageFin + ")";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeQuery(query);
+			Connexion.connexion().commit();
+			System.out.println("Nouveau seuil ajouté !");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
 			if(stmt != null) stmt.close();
 		}
 	}
