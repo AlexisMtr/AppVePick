@@ -3,7 +3,6 @@ package Traitements;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
@@ -22,12 +21,6 @@ public class Reservation {
 		ResultSet rs = null;
 		Date dateDebutLocation, dateFinLocation;
 		Calendar cal;
-		
-		query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
-		stmt = Connexion.connexion().createStatement();
-		rs = stmt.executeQuery(query);
-		if(stmt != null) stmt.close();
-		if(rs != null) rs.close();
 		
 		//affiche les modèles de vélo
 		query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
@@ -154,13 +147,17 @@ public class Reservation {
 	{
 		int numResa;
 		//affiche les résa du user connecté
+		Statement stmt = null;
+		ResultSet rs = null;
+		// query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
+		//stmt = Connexion.connexion().createStatement();
+		//stmt.executeQuery(query);
+		//if(stmt != null) stmt.close();
 		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
 				+ "FROM " + Connexion.schemasBD + "reservation "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "station "
 				+ "WHERE uti_id = "+userId+ " ORDER BY res_id";
-		Statement stmt = null;
-		ResultSet rs = null;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -173,11 +170,11 @@ public class Reservation {
 				int res_id = rs.getInt(1);
 				System.out.print(res_id + " - ");
 				String res_deb = rs.getString(2);
-				System.out.print(res_deb.substring(0, 10) + " - ");
+				System.out.print(res_deb.substring(0, 16) + " - ");
 				String res_fin = rs.getString(3);
-				System.out.print(res_fin.substring(0, 10) + " - ");
+				System.out.print(res_fin.substring(0, 16) + " - ");
 				String res_crea = rs.getString(4);
-				System.out.print(res_crea + " - ");
+				System.out.print(res_crea.substring(0, 16) + " - ");
 				String res_statut = rs.getString(5);
 				System.out.print(res_statut + " - ");
 				String mod_libelle = rs.getString(6);
@@ -198,14 +195,14 @@ public class Reservation {
 		}
 		
 		//demande station
-		System.out.println("Entrez le num�ro de la r�servation choisie :");
+		System.out.println("Entrez le numéro de la réservation choisie :");
 		sc.reset();
 		numResa = sc.nextInt();
 		
 		try
 		{
 			Reservation.UpdateFileAttente(numResa);
-			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa;
+			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
@@ -226,10 +223,11 @@ public class Reservation {
 	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
 		int countResaChevauche = 0;
 		int countBornette = 0;
-		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > SYSDATE AND res_statut ='validee'";
-		
 		Statement stmt = null;
 		ResultSet rs = null;
+
+		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > SYSDATE AND res_statut ='validee'";
+		
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
@@ -281,16 +279,15 @@ public class Reservation {
 	public static void UpdateFileAttente(int idReservation) throws Exception {
 		Date dateDebut, dateFin;
 		int idStation = 0;
-		
-		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
-		
 		Statement stmt = null;
 		ResultSet rs = null;
+		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
+				//attention la date ne contient pas les heures
 				dateDebut = rs.getDate("res_deb");
 				dateFin = rs.getDate("res_fin");
 				idStation = rs.getInt("sta_id");
