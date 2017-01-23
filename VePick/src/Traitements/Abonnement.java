@@ -1,6 +1,5 @@
 package Traitements;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -76,23 +75,33 @@ public class Abonnement {
 	{
 		int password = 0;
 		String query = null;
-		CallableStatement call = null;
 		Statement stmt = null;
 		ResultSet rs = null;
+		int utiId = 0;
 		
-		query = "CALL CreerNonAbonne(" + CB + ");";
+		query = "{CALL " + Connexion.schemasBD + "CreerNonAbonne('" + CB + "')}";
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			call = Connexion.connexion().prepareCall(query);
-			call.setString(1, CB);
-			call.executeQuery();
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeQuery(query);
 			
-			query = "SELECT uti_code FROM " + Connexion.schemasBD + "NonAbonne WHERE uti_id = " + Connexion.schemasBD + "utilisateur_id.currval;";
+			stmt.close();
+			
+			query = "SELECT " + Connexion.schemasBD + "utilisateur_id.currval FROM dual";
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+				utiId = rs.getInt(1);
+			
+			stmt.close();
+			rs.close();
+			
+			query = "SELECT uti_codeSecret FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + utiId;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next())
-				password = rs.getInt("uti_code");
+				password = rs.getInt("uti_codeSecret");
 			
 			Connexion.connexion().commit();
 		}
@@ -103,7 +112,6 @@ public class Abonnement {
 		}
 		finally
 		{
-			if(call != null) call.close();
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 		}
