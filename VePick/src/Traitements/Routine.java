@@ -1,9 +1,7 @@
 package Traitements;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Scanner;
@@ -115,19 +113,20 @@ public class Routine {
 		return nb;
 	}
 	
-	public static void validerTache(int rou_id, int tac_ordre) throws Exception
+	public static void validerTache(int rou_id, int tac_ordre, String commentaire) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
-		query = "UPDATE " + Connexion.schemasBD + "Tache SET tac_execute = 1 WHERE tac_ordre = " + tac_ordre + " AND rou_id = " + rou_id;
+		query = "UPDATE " + Connexion.schemasBD + "Tache SET tac_execute = 1, tac_commentaire = '" + commentaire + "' WHERE tac_ordre = " + tac_ordre + " AND rou_id = " + rou_id;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeUpdate(query);
 			Connexion.connexion().commit();
+			System.out.println("Tache validee");
 		}
 		catch(Exception ex)
 		{
@@ -140,6 +139,37 @@ public class Routine {
 			if(rs != null) rs.close();
 		}
 		
+	}
+	
+	public static void notifierTache(int rou_id, int tac_ordre, String commentaire) throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "INSERT INTO " + Connexion.schemasBD + "Notification VALUES(" 
+				+ Connexion.schemasBD + "notification_id.nextval, SYSDATE, "
+				+ "'" + commentaire + "',"
+				+ tac_ordre + ", "
+				+ rou_id + ")";
+		try
+		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeUpdate(query);
+			Connexion.connexion().commit();
+			System.out.println("Tache notifiee");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 	}
 	
 	public static void afficherAllRoutines() throws Exception

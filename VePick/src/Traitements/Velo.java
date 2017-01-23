@@ -111,4 +111,118 @@ public class Velo {
 			if(stmt != null) stmt.close();
 		}
 	}
+
+	public static void declarerHS(int vel) throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+
+		query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_etat = 'HS' WHERE vel_id = " + vel;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeUpdate(query);
+			Connexion.connexion().commit();
+			System.out.println("Declaration OK");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+		}
+	}
+
+	public static void deplacer(int vel) throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+	
+		query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_statut = 'embarque' WHERE vel_id = " + vel;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeUpdate(query);
+			Connexion.connexion().commit();
+			System.out.println("Le velo est maintenant embarque");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+		}
+	}
+
+	public static void afficherVelosEmbarque() throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "SELECT * FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele "
+				+ "WHERE vel_statut = 'embarque'";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				Date miseEnService = rs.getDate("vel_miseEnService");
+				int veloId = rs.getInt("vel_id");
+				String modele = rs.getString("mod_libelle");
+				Double montant = rs.getDouble("mod_tarif");
+				String etat = rs.getString("vel_etat");
+				String statut = rs.getString("vel_statut");
+				
+				System.out.println("Velo " + veloId);
+				System.out.println("- Mise en service : " + miseEnService.toLocaleString());
+				System.out.println("- Modele : " + modele);
+				System.out.println("- Tarif /h : " + montant);
+				System.out.println("- Etat : " + etat);
+				System.out.println("- Statut : " + statut);
+			}
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+	}
+
+	public static void deposerCentre(int centre, int vel) throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "INSERT INTO " + Connexion.schemasBD + "velo_reparation(debutmaintenance, vel_id, cen_id) VALUES(SYSDATE, "
+				+ vel + ", "
+				+ centre + ")";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Velo depose dans le centre");
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+	}
 }

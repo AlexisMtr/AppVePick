@@ -16,7 +16,7 @@ public class UserApp {
 	public static Scanner sc = new Scanner(System.in);
 	
 	public static void main(String[] args) {
-		userId = 2;
+		userId = 1;
 		System.out.println("VePick !");
 		
 		int choix = 0;
@@ -249,7 +249,8 @@ public class UserApp {
 			System.out.println("2 - Consulter mes routines");
 			System.out.println("3 - Valider/Notifier une tache");
 			System.out.println("4 - Deplacer un velo");
-			System.out.println("5 - sortir !");
+			System.out.println("5 - Deposer en centre");
+			System.out.println("6 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -257,18 +258,21 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
-						// TODO
+						declarerVeloHS();
 						break;
 					case 2:
 						consulterRoutine(userId);
 						break;
 					case 3:
-						// TODO
+						validerTache(userId);
 						break;
 					case 4:
-						// TODO
+						deplacerVelo();
 						break;
 					case 5:
+						deposerEnCentre();
+						break;
+					case 6:
 						sortir = true;
 						break;
 					default:
@@ -287,6 +291,65 @@ public class UserApp {
 		}
 	}
 	
+
+	private static void deposerEnCentre() throws Exception
+	{
+		//Station.afficherStation();
+		System.out.println("Quel centre ?");
+		int centre = sc.nextInt();
+		Velo.afficherVelosEmbarque();
+		System.out.println("Quel velo ? (0 pour annuler)");
+		int vel = sc.nextInt();	
+		if(vel != 0)
+			Velo.deposerCentre(centre, vel);
+	}
+
+
+	private static void deplacerVelo() throws Exception
+	{
+		Station.afficherStation();
+		System.out.println("Quelle station ?");
+		int sta = sc.nextInt();
+		Velo.afficherVelos(sta);
+		System.out.println("Quel velo ? (0 pour annuler)");
+		int vel = sc.nextInt();
+		if(vel != 0)
+			Velo.deplacer(vel);
+	}
+
+
+	private static void declarerVeloHS() throws Exception {
+		Station.afficherStation();
+		System.out.println("Quelle station ?");
+		int sta = sc.nextInt();
+		Velo.afficherVelos(sta);
+		System.out.println("Quel velo ?");
+		int vel = sc.nextInt();
+		Velo.declarerHS(vel);		
+	}
+
+
+	private static void validerTache(int userId) throws Exception
+	{
+		System.out.println("Valider ou Notifier ? [V|N]");
+		String choix = sc.next();
+		
+		Routine.routinesConducteur(userId);
+		System.out.println("Quelle routine ?");
+		int routine_id = sc.nextInt();
+		Routine.visualiserRoutine(routine_id);
+		System.out.println("Quelle tache ?");
+		int tache_id = sc.nextInt();
+
+		System.out.println("Commentaire a destination de votre superviseur (1 ligne) : ");
+		String comm = sc.nextLine();
+		
+		if(choix.equals("V"))
+			Routine.validerTache(routine_id, tache_id, comm);
+		else
+			Routine.notifierTache(routine_id, tache_id, comm);
+	}
+
 
 	public static void choixMenuScenario()
 	{
