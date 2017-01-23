@@ -3,6 +3,7 @@ package Traitements;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
@@ -149,10 +150,7 @@ public class Reservation {
 		//affiche les résa du user connecté
 		Statement stmt = null;
 		ResultSet rs = null;
-		// query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
-		//stmt = Connexion.connexion().createStatement();
-		//stmt.executeQuery(query);
-		//if(stmt != null) stmt.close();
+
 		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
 				+ "FROM " + Connexion.schemasBD + "reservation "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
@@ -163,7 +161,7 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Vos réservations :");
-			System.out.println("NUM| DATE_DEB |  DATE_FIN  |    DATE DE CREATION    | STATUT | MODELE VELO   |  ADRESSE STATION");
+			System.out.println("NUM |    DATE_DEB    |     DATE_FIN     |  DATE DE CREATION  | STATUT |  MODELE VELO  |  ADRESSE STATION");
 			System.out.println("----------------------------------------------------------------------------------------------");
 			while(rs.next())
 			{
@@ -234,6 +232,7 @@ public class Reservation {
 			rs = stmt.executeQuery(query);
 			while(rs.next())
 			{
+				//Attention heure non prise en compte
 				if(dateDebut.before(rs.getDate("res_fin")) && dateFin.after(rs.getDate("res_deb"))) {
 					countResaChevauche ++;
 				}
@@ -275,21 +274,21 @@ public class Reservation {
 		}
 	}
 	
-	//TODO A tester
 	public static void UpdateFileAttente(int idReservation) throws Exception {
-		Date dateDebut, dateFin;
+		java.util.Date dateDebut, dateFin;
 		int idStation = 0;
 		Statement stmt = null;
 		ResultSet rs = null;
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
-				//attention la date ne contient pas les heures
-				dateDebut = rs.getDate("res_deb");
-				dateFin = rs.getDate("res_fin");
+				//formattage de la chaine de caractère car rs.getDate ne retourne pas l'heure
+				dateDebut = formatter.parse(rs.getString("res_deb").substring(0, 19));
+				dateFin = formatter.parse(rs.getString("res_fin").substring(0, 19));
 				idStation = rs.getInt("sta_id");
 			}else {
 				throw(new Exception("La réservation n'existe pas"));
@@ -298,12 +297,12 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			if(idStation != 0) {
-				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE res_deb > SYSDATE AND sta_id ="+idStation+"ORDER BY res_crea";
+				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE res_deb > SYSDATE AND res_statut = 'en_attente' AND sta_id ="+idStation+"ORDER BY res_crea";
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				
 				while(rs.next()) {
-					if(dateDebut.before(rs.getDate("res_fin")) && dateFin.after(rs.getDate("res_deb"))) {
+					if(dateDebut.before(formatter.parse(rs.getString("res_fin").substring(0, 19))) && dateFin.after(formatter.parse(rs.getString("res_deb").substring(0, 19)))) {
 						query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+rs.getInt("res_id");
 						if(stmt != null) stmt.close();
 						if(rs != null) rs.close();
