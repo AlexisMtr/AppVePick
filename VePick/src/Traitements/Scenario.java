@@ -182,7 +182,7 @@ public class Scenario {
 				System.out.println("Appuyer sur la touche \"Entrée\" pour insérer la tache...");
 				sc.nextLine();
 				
-				query = "INSERT INTO " + Connexion.schemasBD + "tache(rou_id, tac_intitulee) VALUES(" + rou_id + ", 'test')" ;
+				query = "INSERT INTO " + Connexion.schemasBD + "tache(rou_id, tac_intitule) VALUES(" + rou_id + ", 'test')" ;
 				
 				System.out.println("[0] Insert Tache (vel_id=" + rou_id + ") : WAIT");
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
