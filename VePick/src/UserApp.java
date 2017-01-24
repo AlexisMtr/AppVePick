@@ -432,9 +432,9 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
-			System.out.println("1 - Location en m�me temps");
+			System.out.println("1 - Location en méme temps");
 			System.out.println("2 - Location vélo HS");
-			System.out.println("3 - Cr�ation d'une tâche dans une routine supprimée");
+			System.out.println("3 - Création d'une tâche dans une routine supprimée");
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
 			
@@ -644,7 +644,7 @@ public class UserApp {
 			
 			int locationId = Location.VerifierLocation(password, userId, veloId);
 			if(locationId != 0)
-				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "�");
+				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "€");
 			else
 				System.err.println("Aucune locations trouvees");
 		}

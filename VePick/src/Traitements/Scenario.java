@@ -66,16 +66,16 @@ public class Scenario {
 			int choix = 0;
 			while(choix != 1 && choix != 2)
 			{
-				System.out.println("Quelle partie du scÈnario voulez-vous effectuer ? (1|2)");
+				System.out.println("Quelle partie du sc√©nario voulez-vous effectuer ? (1|2)");
 				choix = sc.nextInt();
 			}
 			
-			System.out.println("\n*** Lancement du scÈnario d'insertion de location sur vÈlo HS *** ");
+			System.out.println("\n*** Lancement du sc√©nario d'insertion de location sur v√©lo HS *** ");
 			
 			if (choix == 1)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour modifier le vÈlo...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour modifier le v√©lo...");
 				sc.nextLine();
 				
 				query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_etat = 'HS' "
@@ -84,9 +84,9 @@ public class Scenario {
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[0] Update du vÈlo (vel_id=" + vel_id + ") : DONE");
+				System.out.println("[0] Update du v√©lo (vel_id=" + vel_id + ") : DONE");
 	
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour commit l'insertion...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour commit l'insertion...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
@@ -95,7 +95,7 @@ public class Scenario {
 			else if (choix == 2)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour insÈrer la location...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour ins√©rer la location...");
 				sc.nextLine();
 				
 				query = "INSERT INTO " + Connexion.schemasBD + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + Connexion.schemasBD + "location_id.nextval, "
@@ -107,7 +107,7 @@ public class Scenario {
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
 	
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour commit l'insertion...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour commit l'insertion...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
@@ -137,16 +137,16 @@ public class Scenario {
 			int choix = 0;
 			while(choix != 1 && choix != 2)
 			{
-				System.out.println("Quelle partie du scÈnario voulez-vous effectuer ? (1|2)");
+				System.out.println("Quelle partie du sc√©nario voulez-vous effectuer ? (1|2)");
 				choix = sc.nextInt();
 			}
 			
-			System.out.println("\n*** Lancement du scÈnario d'insertion de t‚che dans une routine supprimÈe ***");
+			System.out.println("\n*** Lancement du sc√©nario d'insertion de t√©che dans une routine supprim√©e ***");
 			
 			if (choix == 1)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour supprimer toutes les t‚ches d'une routine...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour supprimer toutes les t√©ches d'une routine...");
 				sc.nextLine();
 				
 				query = "DELETE FROM " + Connexion.schemasBD + "tache "
@@ -155,12 +155,9 @@ public class Scenario {
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[0] Delete t‚ches (rou_id=" + rou_id + ") : DONE");
+				System.out.println("[0] Delete t√©ches (rou_id=" + rou_id + ") : DONE");
 				
-				Connexion.connexion().commit();		
-				System.out.println("[1] Commit du delete (rou_id=" + rou_id + ") : DONE");
-				
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour supprimer une routine...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour supprimer une routine...");
 				sc.nextLine();
 				
 				query = "DELETE FROM " + Connexion.schemasBD + "routine "
@@ -169,10 +166,10 @@ public class Scenario {
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[3] Delete t‚ches (rou_id=" + rou_id + ") : DONE");
+				System.out.println("[3] Delete t√©ches (rou_id=" + rou_id + ") : DONE");
 				
 
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour commit la suppression de la routine...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour commit la suppression de la routine...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
@@ -182,17 +179,17 @@ public class Scenario {
 			else if (choix == 2)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour insÈrer la tache...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour ins√©rer la tache...");
 				sc.nextLine();
 				
-				query = "INSERT INTO " + Connexion.schemasBD + "tache(rou_id, tac_intitulee) VALUES(" + rou_id + ", 'test'" ;
+				query = "INSERT INTO " + Connexion.schemasBD + "tache(rou_id, tac_intitulee) VALUES(" + rou_id + ", 'test')" ;
 				
 				System.out.println("[0] Insert Tache (vel_id=" + rou_id + ") : WAIT");
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
 	
-				System.out.println("Appuyer sur la touche \"EntrÈe\" pour commit l'insertion...");
+				System.out.println("Appuyer sur la touche \"Entr√©e\" pour commit l'insertion...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
