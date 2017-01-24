@@ -4,26 +4,83 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import AccessBD.Connexion;
 
 public class Reservation {
+	
 	static Scanner sc = new Scanner(System.in);
 	
-	public static void reserverVelo(int userId) throws Exception
-	{
-		int numModeleVelo,numStation;
-		String[] dateDebutTab, heureDebutTab, dateFinTab, heureFinTab;
-		String query, buffer;
+	/**
+	 * Enregistre une nouvelle Réservation et lui attribut un statut
+	 * @param userId : identifiant de l'utilisateur
+	 * @param numStation : identifiant de la station
+	 * @param numModeleVelo : identifiant du vélo concerné
+	 * @param dateDebutTab : date de début séparée et réparte dans un tableau
+	 * @param dateFinTab : date de fin séparée et réparte dans un tableau
+	 * @param heureDebutTab : heure de début de la réservation
+	 * @param heureFinTab : heure de fin de la réservation
+	 * @param dateDebutLocation : date de début de la réservation
+	 * @param dateFinLocation : date de fin de la réservation
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 */
+	public static void reserverVelo(int userId, int numStation,int numModeleVelo, String[] dateDebutTab, String[] dateFinTab, String[] heureDebutTab, String[] heureFinTab, Date dateDebutLocation, Date dateFinLocation) throws Exception
+	{	//TODO vérifier recouvrement
+		
+		String query;
 		Statement stmt = null;
 		ResultSet rs = null;
-		Date dateDebutLocation, dateFinLocation;
-		Calendar cal;
 		
-		//affiche les modèles de vélo
+		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
+				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
+				+ "TO_DATE('"+dateDebutTab[0]+"/"+dateDebutTab[1]+"/"+dateDebutTab[2]+" "+heureDebutTab[0]+":"+heureDebutTab[1]+":00','DD/MM/YYYY HH24:MI:SS'),"
+				+ "TO_DATE('"+dateFinTab[0]+"/"+dateFinTab[1]+"/"+dateFinTab[2]+" "+heureFinTab[0]+":"+heureFinTab[1]+":00', 'DD/MM/YYYY HH24:MI:SS'),"
+				+ numModeleVelo + ","
+				+ numStation + ","
+				+ userId + ")";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			Connexion.connexion().commit();
+			System.out.println("Votre réservation a bien été enregistrée !");
+			
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+			
+			query ="SELECT " + Connexion.schemasBD + "reservation_id.CURRVAL FROM dual";
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			if(rs.next()) {
+				ValidationReservation(rs.getInt(1),dateDebutLocation,dateFinLocation,numStation);
+			}
+		}
+		catch(Exception e)
+		{
+			Connexion.connexion().rollback();
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+		
+	}
+	
+	
+	
+	/**
+	 * Affiche tous les modèles de vélo existant dans la BD
+	 * @throws Lève une exception en cas d'erreur
+	 */
+	public static void afficherAllModelesVelo() throws Exception
+	{
+		String query;
+		Statement stmt = null;
+		ResultSet rs = null;
+
 		query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
 		try
 		{
@@ -48,36 +105,18 @@ public class Reservation {
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 		}
+	}
+	
+	/**
+	 * Affiche toutes les stations de la BD
+	 * @throws Lève une exception en cas d'erreur
+	 */
+	public static void afficherAllStations() throws Exception
+	{
+		String query;
+		Statement stmt = null;
+		ResultSet rs = null;
 		
-		//demande le modèle de vélo
-		System.out.println("Entrez le numéro du modèle de vélo :");
-		numModeleVelo = sc.nextInt();
-		sc.nextLine();
-		//demande les périodes		
-		//debut
-		System.out.println("Entrez une date de début de réservation (JJ/MM/AAAA)");
-		buffer = sc.nextLine();
-		dateDebutTab = buffer.split("/");
-		System.out.println("Entrez une heure de début de réservation (00h00)");
-		buffer = sc.nextLine();
-		heureDebutTab = buffer.split("h");
-		cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1])-1,Integer.parseInt(dateDebutTab[0]),
-				Integer.parseInt(heureDebutTab[0]),Integer.parseInt(heureDebutTab[1]),00);
-		
-		dateDebutLocation = new Date(cal.getTimeInMillis());
-		
-		//fin
-		System.out.println("Entrez une date de fin de réservation (JJ/MM/AAAA)");
-		buffer = sc.nextLine();
-		dateFinTab = buffer.split("/");
-		System.out.println("Entrez une heure de fin de réservation (00h00)");
-		buffer = sc.nextLine();
-		heureFinTab = buffer.split("h");
-		cal = new GregorianCalendar(Integer.parseInt(dateFinTab[2]),Integer.parseInt(dateFinTab[1])-1,Integer.parseInt(dateFinTab[0]),
-				Integer.parseInt(heureFinTab[0]),Integer.parseInt(heureFinTab[1]),00);
-		dateFinLocation = new Date(cal.getTimeInMillis());
-		
-		//affiche toutes les stations
 		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + "station";
 		try
 		{
@@ -102,56 +141,51 @@ public class Reservation {
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 		}
+	}
+	
+	/**
+	 * Supprime une réservation donnée pour un utilisateur donné
+	 * @param userId : identifiant de l'utisateur
+	 * @param numResa : identifiant de la réservation
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 */
+	public static void annulerReservationVelo(int userId, int numResa) throws Exception
+	{
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query;
 		
-		//demande station
-		System.out.println("Entrez le numéro de la station voulue :");
-		numStation = sc.nextInt();
-		
-		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
-				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
-				+ "TO_DATE('"+dateDebutTab[0]+"/"+dateDebutTab[1]+"/"+dateDebutTab[2]+" "+heureDebutTab[0]+":"+heureDebutTab[1]+":00','DD/MM/YYYY HH24:MI:SS'),"
-				+ "TO_DATE('"+dateFinTab[0]+"/"+dateFinTab[1]+"/"+dateFinTab[2]+" "+heureFinTab[0]+":"+heureFinTab[1]+":00', 'DD/MM/YYYY HH24:MI:SS'),"
-				+ numModeleVelo + ","
-				+ numStation + ","
-				+ userId + ")";
 		try
 		{
+			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
-
-			System.out.println("Votre réservation a bien été enregistrée !");
-			if(stmt != null) stmt.close();
-			if(rs != null) rs.close();
-			
-			query ="SELECT " + Connexion.schemasBD + "reservation_id.CURRVAL FROM dual";
-			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);
-			if(rs.next()) {
-				ValidationReservation(rs.getInt(1),dateDebutLocation,dateFinLocation,numStation);
-			}
+			System.out.println("La réservation a bien été supprimée !");
 		}
 		catch(Exception e)
 		{
 			Connexion.connexion().rollback();
-			e.printStackTrace();
+			throw e;
 		}
 		finally
 		{
 			if(stmt != null) stmt.close();
 			if(rs != null) rs.close();
 		}
-		
 	}
 	
-	public static void annulerReservationVelo(int userId) throws Exception
+	/**
+	 * Affiche les réservations de l'utilisateur connecté
+	 * @throws Lève une exception en cas d'erreur
+	 */
+	public static void afficherReservationsDuUserConnecte(int userId) throws Exception
 	{
-		int numResa;
-		//affiche les résa du user connecté
 		Statement stmt = null;
 		ResultSet rs = null;
+		String query;
 
-		String query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
+		query = "SELECT res_id, res_deb, res_fin, res_crea, res_statut, mod_libelle, sta_adresse "
 				+ "FROM " + Connexion.schemasBD + "reservation "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "station "
@@ -184,32 +218,7 @@ public class Reservation {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			if(stmt != null) stmt.close();
-			if(rs != null) rs.close();
-		}
-		
-		//demande station
-		System.out.println("Entrez le numéro de la réservation choisie :");
-		sc.reset();
-		numResa = sc.nextInt();
-		
-		try
-		{
-			Reservation.UpdateFileAttente(numResa);
-			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
-			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);
-			Connexion.connexion().commit();
-			System.out.println("La réservation a bien été supprimée !");
-		}
-		catch(Exception e)
-		{
-			Connexion.connexion().rollback();
-			e.printStackTrace();
+			throw e;
 		}
 		finally
 		{
@@ -218,13 +227,24 @@ public class Reservation {
 		}
 	}
 	
+	/**
+	 * Compte le nombre de réservations max possibles dans une station donnée pour une période donnée (nombre de bornette/2)
+	 * Si le nombre de réservations pour cette période donnée alors UPDATE la réservation et la met "valide"
+	 * Sinon la réservation est mise sur la liste d'attente
+	 * @param idReservation : identifiant de la réservation à vérifier
+	 * @param dateDebut : date de début de la réservation
+	 * @param dateFin : date de fin de la réservation
+	 * @param idStation : identifiant de la station où l'on veut réserver un vélo
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 */
 	public static void ValidationReservation(int idReservation, Date dateDebut, Date dateFin, int idStation) throws Exception {
 		int countResaChevauche = 0;
 		int countBornette = 0;
 		Statement stmt = null;
 		ResultSet rs = null;
+		String query;
 
-		String query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > SYSDATE AND res_statut ='validee'";
+		query = "SELECT res_deb, res_fin FROM " + Connexion.schemasBD + "Reservation WHERE sta_id ="+idStation+" AND res_deb > SYSDATE AND res_statut ='validee'";
 		
 		try
 		{
@@ -251,7 +271,7 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			if(countBornette != 0 && countResaChevauche < countBornette/2) {
-				//update validée
+				//update validé
 				query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
 				System.out.println("La réservation a été validée");
 				stmt = Connexion.connexion().createStatement();
@@ -274,22 +294,33 @@ public class Reservation {
 		}
 	}
 	
+	/**
+	 * Met à jour la file d'attente si la réservation annulée était validée
+	 * Valide la réservation qui à été ajoutée en premier sur la liste d'attente (sur la même période)
+	 * @param idReservation : identifiant de la réservation
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 */
 	public static void UpdateFileAttente(int idReservation) throws Exception {
-		java.util.Date dateDebut, dateFin;
+		java.util.Date dateDebut=null, dateFin=null;
 		int idStation = 0;
 		Statement stmt = null;
 		ResultSet rs = null;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-		String query = "SELECT res_deb, res_fin, sta_id FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
+		String query;
+		
+		query = "SELECT res_deb, res_fin, sta_id, res_statut FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
-				//formattage de la chaine de caractère car rs.getDate ne retourne pas l'heure
-				dateDebut = formatter.parse(rs.getString("res_deb").substring(0, 19));
-				dateFin = formatter.parse(rs.getString("res_fin").substring(0, 19));
-				idStation = rs.getInt("sta_id");
+				if(rs.getString("res_statut").equals("validee"))
+				{
+					//formattage de la chaine de caractère car rs.getDate ne retourne pas l'heure
+					dateDebut = formatter.parse(rs.getString("res_deb").substring(0, 19));
+					dateFin = formatter.parse(rs.getString("res_fin").substring(0, 19));
+					idStation = rs.getInt("sta_id");
+				}				
 			}else {
 				throw(new Exception("La réservation n'existe pas"));
 			}
