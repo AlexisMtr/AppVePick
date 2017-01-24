@@ -1,4 +1,7 @@
+import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import Traitements.Abonnement;
@@ -431,8 +434,8 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
-			System.out.println("1 - Location en m�me temps");
-			System.out.println("2 - Location v�lo HS");
+			System.out.println("1 - Location en m�me temps");
+			System.out.println("2 - Location v�lo HS");
 			System.out.println("3 - TODO");
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
@@ -591,39 +594,91 @@ public class UserApp {
 	public static void reserverVelo(int userId)
 	{
 		try {
-			Reservation.reserverVelo(userId);
+			int numModeleVelo;
+			String[] dateDebutTab, dateFinTab, heureDebutTab, heureFinTab;
+			String buffer;
+			Date dateDebutLocation, dateFinLocation;
+			Calendar cal;
+			int numStation;
+			
+			Reservation.afficherAllModelesVelo();
+			System.out.println("Entrez le numéro du modèle de vélo :");
+			numModeleVelo = sc.nextInt();
+
+			//demande les périodes de début et fin
+			System.out.println("Entrez une date de début de réservation (JJ/MM/AAAA)");
+			buffer = sc.nextLine();
+			dateDebutTab = buffer.split("/");
+			System.out.println("Entrez une heure de début de réservation (00h00)");
+			buffer = sc.nextLine();
+			heureDebutTab = buffer.split("h");
+			cal = new GregorianCalendar(Integer.parseInt(dateDebutTab[2]),Integer.parseInt(dateDebutTab[1])-1,Integer.parseInt(dateDebutTab[0]),
+					Integer.parseInt(heureDebutTab[0]),Integer.parseInt(heureDebutTab[1]),00);
+			dateDebutLocation = new Date(cal.getTimeInMillis());
+			
+			System.out.println("Entrez une date de fin de réservation (JJ/MM/AAAA)");
+			buffer = sc.nextLine();
+			dateFinTab = buffer.split("/");
+			System.out.println("Entrez une heure de fin de réservation (00h00)");
+			buffer = sc.nextLine();
+			heureFinTab = buffer.split("h");
+			cal = new GregorianCalendar(Integer.parseInt(dateFinTab[2]),Integer.parseInt(dateFinTab[1])-1,Integer.parseInt(dateFinTab[0]),
+					Integer.parseInt(heureFinTab[0]),Integer.parseInt(heureFinTab[1]),00);
+			dateFinLocation = new Date(cal.getTimeInMillis());
+			
+			System.out.println("Entrez le numéro de la station voulue :");
+			numStation = sc.nextInt();
+			
+			Reservation.reserverVelo(userId, numStation, numModeleVelo, dateDebutTab, dateFinTab, heureDebutTab, heureFinTab, dateDebutLocation, dateFinLocation);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void annulerReservationVelo(int userId)
+	public static void annulerReservationVelo(int userId) throws Exception
 	{
-		try {
-			Reservation.annulerReservationVelo(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		int numResa;
+		
+		Reservation.afficherReservationsDuUserConnecte(userId);
+		System.out.println("Entrez le numéro de la réservation choisie :");
+		sc.reset();
+		numResa = sc.nextInt();
+		Reservation.annulerReservationVelo(userId,numResa);
+		Reservation.UpdateFileAttente(numResa);
 	}
 	
-	public static void signalerDepart(int userId)
+	public static void signalerDepart(int userId) throws Exception
 	{
-		try {
-			Degradation.signalerDegradation(userId,1);
-		} catch(Exception ex)
-		{
-			System.err.println(ex.getMessage());
-		}
+		String commentaire;
+		int niveau, locId;
+		
+		Location.afficherLocationsDunUtilisateur(userId);
+		System.out.println();
+		System.out.println("Saississez votre numéro de location");
+		locId = sc.nextInt();
+		System.out.println("Saisissez votre commentaire :");
+		sc.nextLine();
+		commentaire = sc.nextLine();
+		System.out.println("Saississez le niveau de dégradation (1 à 5) :");
+		niveau = sc.nextInt();
+		Degradation.signalerDegradation(userId,1, commentaire, niveau, locId);
 	}
 	
-	public static void signalerArrivee(int userId)
+	public static void signalerArrivee(int userId) throws Exception
 	{
-		try {
-			Degradation.signalerDegradation(userId,0);
-		} catch(Exception ex)
-		{
-			System.err.println(ex.getMessage());
-		}
+		String commentaire;
+		int niveau, locId;
+		
+		Location.afficherLocationsDunUtilisateur(userId);
+		System.out.println();
+		System.out.println("Saississez votre numéro de location");
+		locId = sc.nextInt();
+		System.out.println("Saisissez votre commentaire :");
+		sc.nextLine();
+		commentaire = sc.nextLine();
+		System.out.println("Saississez le niveau de dégradation (1 à 5) :");
+		niveau = sc.nextInt();
+		Degradation.signalerDegradation(userId,0, commentaire, niveau, locId);
 	}
 	
 	public static void rendreVelo()

@@ -180,4 +180,46 @@ public class Location {
 		}
 		return !isOk ? 0 : loc_id;
 	}
+	
+	/**
+	 * Affiche les locations d'un utilisateur
+	 * @param userId : identifiant de l'utilisateur
+	 * @throws Lève une exception en cas d'erreur
+	 */
+	public static void afficherLocationsDunUtilisateur(int userId) throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "SELECT loc_id, loc_deb, loc_fin, mod_libelle "
+				+ "FROM " + Connexion.schemasBD + "location "
+				+ "NATURAL JOIN " + Connexion.schemasBD + "velo "
+				+ "NATURAL JOIN " + Connexion.schemasBD + "modele "
+				+ "WHERE uti_id=" + userId + " ORDER BY loc_id";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			System.out.println("Vos Locations :");
+			System.out.println("Numéro | date début | date fin | vélo :");
+			while(rs.next())
+			{
+				int numero = rs.getInt(1); 
+				System.out.print(numero + " - ");
+				String dateDeb = rs.getString(2);
+				System.out.print(dateDeb + " - ");
+				String dateFin = rs.getString(3);
+				System.out.print(dateFin + " - ");
+				String velo = rs.getString(4);
+				System.out.println(velo);
+			}
+			
+		}catch(Exception ex){throw ex;}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+	}
 }

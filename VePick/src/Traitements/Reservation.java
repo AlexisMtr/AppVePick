@@ -69,8 +69,6 @@ public class Reservation {
 		
 	}
 	
-	
-	
 	/**
 	 * Affiche tous les modèles de vélo existant dans la BD
 	 * @throws Lève une exception en cas d'erreur

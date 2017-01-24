@@ -57,23 +57,23 @@ public class Scenario {
 	{
 		String query = null;
 		Statement stmt = null;
-		int vel_id = 18;
+		int vel_id = 19;
 		
 		try
 		{
 			int choix = 0;
 			while(choix != 1 && choix != 2)
 			{
-				System.out.println("Quelle partie du scénario voulez-vous effectuer ? (1|2)");
+				System.out.println("Quelle partie du scï¿½nario voulez-vous effectuer ? (1|2)");
 				choix = sc.nextInt();
 			}
 			
-			System.out.println("\n*** Lancement du scénario d'insertion de location sur vélo HS *** ");
+			System.out.println("\n*** Lancement du scï¿½nario d'insertion de location sur vï¿½lo HS *** ");
 			
 			if (choix == 1)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"Entrée\" pour modifier le vélo...");
+				System.out.println("Appuyer sur la touche \"Entrï¿½e\" pour modifier le vï¿½lo...");
 				sc.nextLine();
 				
 				query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_etat = 'HS' "
@@ -82,9 +82,9 @@ public class Scenario {
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[0] Update du vélo (vel_id=" + vel_id + ") : DONE");
+				System.out.println("[0] Update du vï¿½lo (vel_id=" + vel_id + ") : DONE");
 	
-				System.out.println("Appuyer sur la touche \"Entrée\" pour commit l'insertion...");
+				System.out.println("Appuyer sur la touche \"Entrï¿½e\" pour commit l'insertion...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
@@ -93,7 +93,7 @@ public class Scenario {
 			else if (choix == 2)
 			{
 				sc.nextLine();
-				System.out.println("Appuyer sur la touche \"Entrée\" pour insérer la location...");
+				System.out.println("Appuyer sur la touche \"Entrï¿½e\" pour insï¿½rer la location...");
 				sc.nextLine();
 				
 				query = "INSERT INTO " + Connexion.schemasBD + "Location(loc_id, loc_deb, uti_id, vel_id) VALUES(" + Connexion.schemasBD + "location_id.nextval, "
@@ -103,9 +103,9 @@ public class Scenario {
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[0] Update du vélo (vel_id=" + vel_id + ") : DONE");
+				System.out.println("[0] Update du vï¿½lo (vel_id=" + vel_id + ") : DONE");
 	
-				System.out.println("Appuyer sur la touche \"Entrée\" pour commit l'insertion...");
+				System.out.println("Appuyer sur la touche \"Entrï¿½e\" pour commit l'insertion...");
 				sc.nextLine();
 				
 				Connexion.connexion().commit();		
