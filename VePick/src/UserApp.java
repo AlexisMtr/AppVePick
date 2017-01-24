@@ -435,7 +435,7 @@ public class UserApp {
 			System.out.println("1 - Location en méme temps");
 			System.out.println("2 - Location vélo HS");
 			System.out.println("3 - Création d'une tâche dans une routine supprimée");
-			System.out.println("4 - TODO");
+			System.out.println("4 - Modification statut bornette");
 			System.out.println("5 - sortir !");
 			
 			choix  = sc.nextInt();
@@ -453,7 +453,7 @@ public class UserApp {
 						new Scenario().concurentInsertTacheRoutineDelete(sc);
 						break;
 					case 4:
-						// TODO
+						new Scenario().concurentUpdateBornette(sc);
 						break;
 					case 5:
 						sortir = true;
@@ -544,7 +544,7 @@ public class UserApp {
 		}
 	}
 	
-	private static void afficherVelos() {
+	public static void afficherVelos() {
 		try
 		{
 			System.out.println("Quelle station ?");
@@ -558,7 +558,7 @@ public class UserApp {
 		}
 	}
 
-	private static void voirLocations() {
+	public static void voirLocations() {
 		try
 		{
 			Location.AfficherLocation();
