@@ -130,7 +130,7 @@ public class Scenario {
 	{
 		String query = null;
 		Statement stmt = null;
-		int rou_id = 4;
+		int rou_id = 1;
 		
 		try
 		{
@@ -152,18 +152,16 @@ public class Scenario {
 				query = "DELETE FROM " + Connexion.schemasBD + "tache "
 						+ "WHERE rou_id = " + rou_id;
 				
-				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
+				stmt.close();
 				System.out.println("[0] Delete téches (rou_id=" + rou_id + ") : DONE");
-				
-				System.out.println("Appuyer sur la touche \"Entrée\" pour supprimer une routine...");
-				sc.nextLine();
 				
 				query = "DELETE FROM " + Connexion.schemasBD + "routine "
 						+ "WHERE rou_id = " + rou_id;
 				
-				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
 				System.out.println("[3] Delete téches (rou_id=" + rou_id + ") : DONE");
@@ -184,8 +182,8 @@ public class Scenario {
 				
 				query = "INSERT INTO " + Connexion.schemasBD + "tache(rou_id, tac_intitule) VALUES(" + rou_id + ", 'test')" ;
 				
-				System.out.println("[0] Insert Tache (vel_id=" + rou_id + ") : WAIT");
-				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				System.out.println("[0] Insert Tache (rou_id=" + rou_id + ") : WAIT");
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
 	
