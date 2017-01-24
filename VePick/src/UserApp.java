@@ -250,7 +250,8 @@ public class UserApp {
 			System.out.println("3 - Valider/Notifier une tache");
 			System.out.println("4 - Deplacer un velo");
 			System.out.println("5 - Deposer en centre");
-			System.out.println("6 - sortir !");
+			System.out.println("6 - Deposer un velo");
+			System.out.println("7 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -273,6 +274,9 @@ public class UserApp {
 						deposerEnCentre();
 						break;
 					case 6:
+						deposerVelo();
+						break;
+					case 7:
 						sortir = true;
 						break;
 					default:
@@ -292,9 +296,30 @@ public class UserApp {
 	}
 	
 
+	private static void deposerVelo() throws Exception
+	{
+		Station.afficherStation();
+		System.out.println("Quelle station ?");
+		int sta = sc.nextInt();
+		int nb = Station.afficherBornette(sta);
+		if(nb != 0)
+		{
+			System.out.println("Quelle bornette ?");
+			int borneId = sc.nextInt();
+			System.out.println("Quel velo ? (0 pour annuler)");
+			int veloId = sc.nextInt();
+			
+			if(veloId != 0)
+				Velo.associerVelo(veloId, borneId);
+		}
+		else
+			System.out.println("Pas de bornette disponible dans cette station !");
+	}
+
+
 	private static void deposerEnCentre() throws Exception
 	{
-		//Station.afficherStation();
+		Velo.afficherCentresReparation();
 		System.out.println("Quel centre ?");
 		int centre = sc.nextInt();
 		Velo.afficherVelosEmbarque();
@@ -323,9 +348,10 @@ public class UserApp {
 		System.out.println("Quelle station ?");
 		int sta = sc.nextInt();
 		Velo.afficherVelos(sta);
-		System.out.println("Quel velo ?");
+		System.out.println("Quel velo ? (0 pour annuler)");
 		int vel = sc.nextInt();
-		Velo.declarerHS(vel);		
+		if(vel != 0)
+			Velo.declarerHS(vel);		
 	}
 
 
@@ -338,8 +364,10 @@ public class UserApp {
 		System.out.println("Quelle routine ?");
 		int routine_id = sc.nextInt();
 		Routine.visualiserRoutine(routine_id);
-		System.out.println("Quelle tache ?");
+		System.out.println("Quelle tache ? (0 pour annuler)");
 		int tache_id = sc.nextInt();
+		
+		if(tache_id == 0) return;
 
 		System.out.println("Commentaire a destination de votre superviseur (1 ligne) : ");
 		String comm = sc.nextLine();

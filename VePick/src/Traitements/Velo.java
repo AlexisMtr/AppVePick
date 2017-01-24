@@ -138,14 +138,21 @@ public class Velo {
 
 	public static void deplacer(int vel) throws Exception
 	{
-		String query = null;
+		String query1 = null;
+		String query2 = null;
 		Statement stmt = null;
 	
-		query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_statut = 'embarque' WHERE vel_id = " + vel;
+		query1 = "UPDATE " + Connexion.schemasBD + "Velo SET vel_statut = 'embarque' WHERE vel_id = " + vel;
+		query2 = "UPDATE " + Connexion.schemasBD + "Bornette SET vel_id = NULL WHERE vel_id = " + vel;
 		try
 		{
 			stmt = Connexion.connexion().createStatement();
-			stmt.executeUpdate(query);
+			stmt.executeUpdate(query1);
+			
+			stmt.close();
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeUpdate(query2);
+			
 			Connexion.connexion().commit();
 			System.out.println("Le velo est maintenant embarque");
 		}
@@ -214,6 +221,37 @@ public class Velo {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Velo depose dans le centre");
+			Connexion.connexion().commit();
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+	}
+	
+	public static void afficherCentresReparation() throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "SELECT * FROM " + Connexion.schemasBD + "centrereparation";
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+
+			while(rs.next())
+			{
+				System.out.println("Centre " + rs.getInt("cen_id"));
+				System.out.println("- adresse : " + rs.getString("cen_adresse"));
+			}
 		}
 		catch(Exception ex)
 		{

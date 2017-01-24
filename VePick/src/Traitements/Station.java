@@ -117,4 +117,35 @@ public class Station {
 			if(stmt != null) stmt.close();
 		}
 	}
+	
+	public static int afficherBornette(int station)throws Exception
+	{
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		int nb = 0;
+		
+		query = "SELECT * FROM " + Connexion.schemasBD + "Bornette WHERE bor_etat = 'OK' AND vel_id IS NULL AND sta_id = " + station;
+		try
+		{
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query);
+			while(rs.next())
+			{
+				nb++;
+				System.out.println("- Bornette " + rs.getInt("bor_id"));
+			}
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
+
+		return nb;
+	}
 }
