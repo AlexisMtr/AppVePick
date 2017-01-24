@@ -572,24 +572,17 @@ public class UserApp {
 		}
 	}
 
-	public static void louerVelo() throws SQLException
+	public static void louerVelo() throws Exception
 	{
-		try
-		{
-			System.out.println("Quelle station ?");
-			int sta = sc.nextInt();
+		int sta, velo;
+		System.out.println("Quelle station ?");
+		sta = sc.nextInt();
 
-			Velo.afficherVelosDispo(sta);
-			System.out.println("Quel velo ?");
-			
-			int velo = sc.nextInt();
-			Location.LouerVelo(velo, userId);
-			
-		}
-		catch(Exception ex)
-		{
-			System.err.println(ex.getMessage());
-		}
+		Velo.afficherVelosDispo(sta);
+		System.out.println("Quel velo ?");
+		
+		velo = sc.nextInt();
+		Location.LouerVelo(velo, userId);
 	}
 	
 	public static void reserverVelo(int userId)
