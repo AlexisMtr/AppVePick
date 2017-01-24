@@ -432,15 +432,9 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
-<<<<<<< HEAD
 			System.out.println("1 - Location en mÔøΩme temps");
-			System.out.println("2 - Location vÔøΩlo HS");
-			System.out.println("3 - TODO");
-=======
-			System.out.println("1 - Location en mÍme temps");
-			System.out.println("2 - Location vÈlo HS");
-			System.out.println("3 - CrÈation d'une t‚che dans une routine supprimÈe");
->>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
+			System.out.println("2 - Location v√©lo HS");
+			System.out.println("3 - CrÔøΩation d'une t√¢che dans une routine supprim√©e");
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
 			
