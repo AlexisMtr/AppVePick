@@ -8,6 +8,12 @@ import AccessBD.Connexion;
 
 public class Location {
 
+	/**
+	 * Enregistre une nouvelle location de vélo en BD
+	 * @param veloId : identifiant du vélo que l'on veut louer
+	 * @param userId : identifiant de l'utilisateur
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 */
 	public static void LouerVelo(int veloId, int userId) throws Exception
 	{
 		String query = null;
@@ -37,6 +43,10 @@ public class Location {
 		}
 	}
 	
+	/**
+	 * Affiche toutes les locations de la BD
+	 * @throws Lève une exception en cas d'erreur
+	 */
 	public static void AfficherLocation() throws Exception
 	{
 		String query = null;
@@ -46,7 +56,6 @@ public class Location {
 		query = "SELECT * FROM " + Connexion.schemasBD + "Location";
 		try
 		{
-			
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			
@@ -89,6 +98,11 @@ public class Location {
 		}
 	}
 	
+	/**
+	 * Associe un vélo à un bornettte
+	 * @throws En cas d'erreur : provoque un rollback et lève une exception
+	 * @return Retourne le montant de la location à regler
+	 */
 	public static Double FinirLocation(int locationId, int borneId) throws Exception
 	{
 		String query = null;
@@ -138,7 +152,14 @@ public class Location {
 		return montant;
 	}
 	
-	
+	/**
+	 * Vérifie qu'il existe une location pour un utilisateur enregistré ou non
+	 * @param MDP : code secret de l'utilisateur
+	 * @param userId : identifiant de l'utilisateur qui à loué
+	 * @param veloId : identifiant du vélo loué
+	 * @return 0 si il n'y a pas de location; numéro de location si la location existe;
+	 * @throws Lève une exception en cas d'erreur
+	 */
 	public static int VerifierLocation(String MDP, int userId, int veloId) throws Exception
 	{
 		String query = null;
