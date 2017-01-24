@@ -1,5 +1,6 @@
 package Traitements;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -9,13 +10,20 @@ import AccessBD.Connexion;
 public class Degradation {
 	static Scanner sc = new Scanner(System.in);
 	
+	/**
+	 * Permet de signaler une degradation pour une location
+	 * @param userId - ID de l'utilisateur
+	 * @param estDepart - indique si la degradation est de depart (1) ou non (0)
+	 * @throws Exception - Lève une excpetion en cas d'erreur et effectue un rollback
+	 */
 	public static void signalerDegradation(int userId, int estDepart) throws Exception
 	{
 		Statement stmt = null;
 		ResultSet rs = null;
 		String commentaire;
 		int niveau, locId, numero;
-		//demande location
+		
+		// affiche les locations de l'utilisateur
 		String query = "SELECT loc_id, loc_deb, loc_fin, mod_libelle "
 				+ "FROM " + Connexion.schemasBD + "location "
 				+ "NATURAL JOIN " + Connexion.schemasBD + "velo "
@@ -23,6 +31,7 @@ public class Degradation {
 				+ "WHERE uti_id=" + userId + " ORDER BY loc_id";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Vos Locations :");
@@ -41,7 +50,11 @@ public class Degradation {
 			System.out.println();
 			System.out.println("Saississez votre numéro de location");
 			locId = sc.nextInt();
-		}catch(Exception ex){throw ex;}
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
 		finally
 		{
 			if(stmt != null) stmt.close();
@@ -63,6 +76,7 @@ public class Degradation {
 				+ locId + ")";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
