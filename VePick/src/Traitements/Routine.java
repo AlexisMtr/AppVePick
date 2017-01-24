@@ -9,8 +9,13 @@ import java.util.Scanner;
 import AccessBD.Connexion;
 
 public class Routine {
-
 	static Scanner sc = new Scanner(System.in);
+	
+	/**
+	 * Affiche les informations de la routine passe en parametre
+	 * @param rou_id - ID de la routine
+	 * @throws Exception - Lève une excpetion en cas d'erreur
+	 */
 	public static void visualiserRoutine(int rou_id) throws Exception
 	{
 		String query = null;
@@ -23,9 +28,12 @@ public class Routine {
 				+ "NATURAL JOIN " + Connexion.schemasBD + "Vehicule WHERE rou_id = " + rou_id;
 		try
 		{
+			// passe la transaction en mode READ COMMITTED
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
+
+			// affiche les informations de la routine (Conducteur, Date, Vehicule, liste des taches)
 			if(rs.next())
 			{
 				int routine = rs.getInt("rou_id");
@@ -78,6 +86,12 @@ public class Routine {
 		}
 	}
 	
+	/**
+	 * Affiche les differentes routine liés a un condcuteur
+	 * @param conducteurId - ID du conducteur
+	 * @return le nombre de routine associes au condcuteur
+	 * @throws Exception - Lève une exception en cas d'erreur
+	 */
 	public static int routinesConducteur(int conducteurId) throws Exception
 	{
 		String query = null;
@@ -85,8 +99,7 @@ public class Routine {
 		ResultSet rs = null;
 		int nb = 0;
 		
-		query = "SELECT rou_id FROM " + Connexion.schemasBD + "Routine "
-				+ "NATURAL JOIN " + Connexion.schemasBD + "Conducteur WHERE con_id = " + conducteurId;
+		query = "SELECT rou_id FROM " + Connexion.schemasBD + "Routine WHERE con_id = " + conducteurId;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
@@ -95,6 +108,7 @@ public class Routine {
 			
 			while(rs.next())
 			{
+				// compte le onombre de routines
 				nb++;
 				System.out.println("- Routine " + rs.getInt("rou_id"));
 			}
@@ -113,6 +127,13 @@ public class Routine {
 		return nb;
 	}
 	
+	/**
+	 * Permet de valider une tache
+	 * @param rou_id - ID de la routine concernée
+	 * @param tac_ordre - Ordre d'execution de la tache
+	 * @param commentaire - Commentaire associé à l'execution de la tache
+	 * @throws Exception - Lève une excpetion en cas d'erreur et effectue un rollback
+	 */
 	public static void validerTache(int rou_id, int tac_ordre, String commentaire) throws Exception
 	{
 		String query = null;
@@ -141,6 +162,13 @@ public class Routine {
 		
 	}
 	
+	/**
+	 * Permet de notifier une tache
+	 * @param rou_id - ID de la routine concernee
+	 * @param tac_ordre - Ordre d'execution de la tache
+	 * @param commentaire - Commentaire associe a la notification
+	 * @throws Exception - Lève une exeception en cas d'erreur et effectue un rollbak
+	 */
 	public static void notifierTache(int rou_id, int tac_ordre, String commentaire) throws Exception
 	{
 		String query = null;
@@ -172,6 +200,10 @@ public class Routine {
 		}
 	}
 	
+	/**
+	 * Affiche toutes les routines
+	 * @throws Exception - Lève une exception en cas d'erreur
+	 */
 	public static void afficherAllRoutines() throws Exception
 	{
 		// affiche toutes les routines
@@ -184,6 +216,7 @@ public class Routine {
 		query = "SELECT rou_id, rou_date, con_nom, veh_immat FROM " + Connexion.schemasBD + "Routine NATURAL JOIN " + Connexion.schemasBD + "Conducteur ORDER BY rou_id";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Toutes les routine :");
@@ -212,13 +245,19 @@ public class Routine {
 		}
 	}
 
-	public static void supprimerTacheDeRoutine(int rou_id) throws Exception {
+	/**
+	 * Supprime les taches d'une routine et la routine
+	 * @param rou_id - ID de la routine concerné
+	 * @throws Exception - Lève une excpetion en cas d'erreur et effectue un rollbak
+	 */
+	public static void supprimerRoutine(int rou_id) throws Exception {
 		Statement stmt= null;
 		
 		String query1 = "DELETE FROM " + Connexion.schemasBD + "tache WHERE rou_id=" + rou_id;
 		String query2 = "DELETE FROM " + Connexion.schemasBD + "routine WHERE rou_id=" + rou_id;
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			//supprimer les tâches de la routine
 			stmt.executeQuery(query1);

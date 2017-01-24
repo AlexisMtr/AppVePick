@@ -265,7 +265,7 @@ public class UserApp {
 		rou_id_choix = sc.nextInt();
 		
 		//supprimer tâches de routine
-		Routine.supprimerTacheDeRoutine(rou_id_choix);
+		Routine.supprimerRoutine(rou_id_choix);
 	}
 
 
