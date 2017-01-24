@@ -432,9 +432,15 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
+<<<<<<< HEAD
 			System.out.println("1 - Location en mï¿½me temps");
 			System.out.println("2 - Location vï¿½lo HS");
 			System.out.println("3 - TODO");
+=======
+			System.out.println("1 - Location en même temps");
+			System.out.println("2 - Location vélo HS");
+			System.out.println("3 - Création d'une tâche dans une routine supprimée");
+>>>>>>> branch 'master' of https://github.com/AlexisMtr/AppVePick.git
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
 			
@@ -450,7 +456,7 @@ public class UserApp {
 						new Scenario().concurentInsertLocationVeloHS(sc);
 						break;
 					case 3:
-						// TODO
+						new Scenario().concurentInsertTacheRoutineDelete(sc);
 						break;
 					case 4:
 						// TODO
