@@ -21,16 +21,27 @@ public class Reservation {
 	 * @param dateFinTab : date de fin séparée et réparte dans un tableau
 	 * @param heureDebutTab : heure de début de la réservation
 	 * @param heureFinTab : heure de fin de la réservation
-	 * @param dateDebutLocation : date de début de la réservation
-	 * @param dateFinLocation : date de fin de la réservation
+	 * @param dateDebutReservation : date de début de la réservation
+	 * @param dateFinReservation : date de fin de la réservation
 	 * @throws En cas d'erreur : provoque un rollback et lève une exception
 	 */
-	public static void reserverVelo(int userId, int numStation,int numModeleVelo, String[] dateDebutTab, String[] dateFinTab, String[] heureDebutTab, String[] heureFinTab, Date dateDebutLocation, Date dateFinLocation) throws Exception
-	{	//TODO vérifier recouvrement
-		
+	public static void reserverVelo(int userId, int numStation,int numModeleVelo, String[] dateDebutTab, String[] dateFinTab, String[] heureDebutTab, String[] heureFinTab, Date dateDebutReservation, Date dateFinReservation) throws Exception
+	{
 		String query;
 		Statement stmt = null;
 		ResultSet rs = null;
+		
+		query = "SELECT res_deb, res_fin FROM "+ Connexion.schemasBD+"Reservation WHERE uti_id ="+userId+" AND res_deb > SYSDATE";
+		stmt = Connexion.connexion().createStatement();
+		rs = stmt.executeQuery(query);
+		while(rs.next()) {
+			if(dateDebutReservation.before(rs.getDate("res_fin")) && dateFinReservation.after(rs.getDate("res_deb"))) {
+				throw new Exception("Vous avez deja une reservation programmee pour cette periode");
+			}
+		}
+		
+		if(stmt != null) stmt.close();
+		if(rs != null) rs.close();
 		
 		query = "INSERT INTO " + Connexion.schemasBD + "reservation(res_id,res_deb,res_fin,mod_id,sta_id,uti_id) "
 				+ "VALUES(" + Connexion.schemasBD + "reservation_id.NEXTVAL, "
@@ -53,7 +64,7 @@ public class Reservation {
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
-				ValidationReservation(rs.getInt(1),dateDebutLocation,dateFinLocation,numStation);
+				ValidationReservation(rs.getInt(1),dateDebutReservation,dateFinReservation,numStation);
 			}
 		}
 		catch(Exception e)

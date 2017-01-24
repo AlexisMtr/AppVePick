@@ -609,6 +609,7 @@ public class UserApp {
 			//demande les périodes de début et fin
 			System.out.println("Entrez une date de début de réservation (JJ/MM/AAAA)");
 			buffer = sc.nextLine();
+			buffer = sc.nextLine();
 			dateDebutTab = buffer.split("/");
 			System.out.println("Entrez une heure de début de réservation (00h00)");
 			buffer = sc.nextLine();
