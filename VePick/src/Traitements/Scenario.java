@@ -8,6 +8,11 @@ import AccessBD.Connexion;
 
 public class Scenario {
 
+	/**
+	 * Permet de lancer le scénario d'insertion de location en concurrence
+	 * @param sc Le scanner de l'application 
+	 * @throws Exception
+	 */
 	public void concurentInsertLocation(Scanner sc) throws Exception
 	{
 		String query = null;
@@ -53,6 +58,11 @@ public class Scenario {
 		}
 	}
 
+	/**
+	 * Permet de lancer le scénario d'insertion de location en concurrence avec la modification du vélo
+	 * @param sc Le scanner de l'application 
+	 * @throws Exception
+	 */
 	public void concurentInsertLocationVeloHS(Scanner sc) throws Exception
 	{
 		String query = null;
@@ -124,6 +134,11 @@ public class Scenario {
 		}
 	}
 
+	/**
+	 * Permet de lancer le scénario d'insertion de tache en concurrence de la suppression de la routine de cette dernière
+	 * @param sc Le scanner de l'application 
+	 * @throws Exception
+	 */
 	public void concurentInsertTacheRoutineDelete(Scanner sc) throws Exception 
 	{
 		String query = null;
@@ -204,6 +219,11 @@ public class Scenario {
 		}
 	}
 
+	/**
+	 * Permet de lancer le scénario d'update de bornette en concurrence
+	 * @param sc Le scanner de l'application 
+	 * @throws Exception
+	 */
 	public void concurentUpdateBornette(Scanner sc) throws Exception 
 	{
 		String query = null;
@@ -252,11 +272,11 @@ public class Scenario {
 				
 				query = "UPDATE " + Connexion.schemasBD + "bornette SET bor_etat = 'HS' "
 						+ "WHERE bor_id = " + bor_id;
-				
+
+				System.out.println("[0] Update bornette (bor_id=" + bor_id + ") : WAIT");
 				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				stmt.executeQuery(query);
-				System.out.println("[0] Update bornette (bor_id=" + bor_id + ") : WAIT");
 				
 
 				System.out.println("Appuyer sur la touche \"Entrée\" pour commit la modification de bornette...");
