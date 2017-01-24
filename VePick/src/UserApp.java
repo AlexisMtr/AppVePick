@@ -74,12 +74,12 @@ public class UserApp {
 			System.out.println("\n[CLIENT] Que voulez vous faire ?");
 			System.out.println("1 - S'abonner (1 an)");
 			System.out.println("2 - Renouveller son abonnement (1 an)");
-			System.out.println("3 - Louer un v�lo");
-			System.out.println("4 - Reserver un v�lo");
-			System.out.println("5 - Annuler une r�servation");
-			System.out.println("6 - Signaler une d�gradation au d�part");
-			System.out.println("7 - Signaler une d�gradation � l'arriv�");
-			System.out.println("8 - Rendre un v�lo");
+			System.out.println("3 - Louer un vélo");
+			System.out.println("4 - Reserver un vélo");
+			System.out.println("5 - Annuler une réservation");
+			System.out.println("6 - Signaler une dégradation au départ");
+			System.out.println("7 - Signaler une dégradation à l'arrivé");
+			System.out.println("8 - Rendre un vélo");
 			System.out.println("9 - Non Inscrit (pour test)");
 			System.out.println("10 - sortir !");
 			
@@ -137,7 +137,8 @@ public class UserApp {
 
 	private static void utilisateurNonAbonne() throws Exception {
 		System.out.println("Votre CB : ");
-		String CB = sc.next();
+		String CB = "4569517538520555";
+		System.out.println(CB);
 		System.out.println("Votre MDP : " + Abonnement.nouvelUtilisateurNonAbonne(CB));
 	}
 
@@ -431,8 +432,8 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
-			System.out.println("1 - Location en m�me temps");
-			System.out.println("2 - Location v�lo HS");
+			System.out.println("1 - Location en m�me temps");
+			System.out.println("2 - Location v�lo HS");
 			System.out.println("3 - TODO");
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
