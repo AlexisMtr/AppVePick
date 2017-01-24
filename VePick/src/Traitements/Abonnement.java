@@ -8,6 +8,18 @@ import AccessBD.Connexion;
 
 public class Abonnement {
 
+	/**
+	 * Permet de creer un nouvel abonne
+	 * @param nom - Nom
+	 * @param prenom - Prenom
+	 * @param CB - Carte bancaire
+	 * @param sexe - Sexe (M|F)
+	 * @param naissance - Date de naissance
+	 * @param adresse - Adresse
+	 * @param code - code secret
+	 * @return l'identifiant de l'utilisateur
+	 * @throws Exception
+	 */
 	public static int nouvelAbonne(String nom, String prenom, String CB, String sexe, String naissance, String adresse, int code) throws Exception
 	{
 		String query = null;
@@ -41,9 +53,16 @@ public class Abonnement {
 			if(stmt != null) stmt.close();
 		}
 		
+		//TODO : retourner ID user
 		return 0;
 	}
 	
+	/**
+	 * Permet de renouveller l'abonnement de l'utilisateur
+	 * @param idUser - ID de l'utilisateur abonne
+	 * @return <b>true</b> si l'abonnement est renouveller, <b>false</b> sinon
+	 * @throws Exception - Lève une exception en cas d'erreur et effectue un rollback
+	 */
 	public static boolean renouvellerAbonnement(int idUser) throws Exception
 	{
 		String query = null;
@@ -71,8 +90,15 @@ public class Abonnement {
 		return update;
 	}
 	
+	/**
+	 * Creer un nouvel utilisateur non abonne
+	 * @param CB - Carte bancaire
+	 * @return le code temporaire de l'utilisateur non abonne
+	 * @throws Exception - Lève une exception en cas d'erreur et effectue un rollback
+	 */
 	public static int nouvelUtilisateurNonAbonne(String CB) throws Exception
 	{
+		//TODO : a tester
 		int password = 0;
 		String query = null;
 		Statement stmt = null;
@@ -88,6 +114,7 @@ public class Abonnement {
 			
 			stmt.close();
 			
+			// recupere le dernier ID inserer
 			query = "SELECT " + Connexion.schemasBD + "utilisateur_id.currval FROM dual";
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -97,6 +124,7 @@ public class Abonnement {
 			stmt.close();
 			rs.close();
 			
+			// selection du code secret lie a cet utilisateur
 			query = "SELECT uti_codeSecret FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + utiId;
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
