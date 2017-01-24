@@ -431,8 +431,8 @@ public class UserApp {
 		while(choix == 0)
 		{
 			System.out.println("\n[SCENARIO] Que voulez vous faire ?");
-			System.out.println("1 - Location en mÃªme temps");
-			System.out.println("2 - TODO");
+			System.out.println("1 - Location en même temps");
+			System.out.println("2 - Location vélo HS");
 			System.out.println("3 - TODO");
 			System.out.println("4 - TODO");
 			System.out.println("5 - sortir !");
@@ -446,7 +446,7 @@ public class UserApp {
 						new Scenario().concurentInsertLocation(sc);
 						break;
 					case 2:
-						// TODO
+						new Scenario().concurentInsertLocationVeloHS(sc);
 						break;
 					case 3:
 						// TODO
