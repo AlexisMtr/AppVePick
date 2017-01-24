@@ -72,9 +72,8 @@ public class Scenario {
 			
 			if (choix == 1)
 			{
-				sc.reset();
-				System.out.println("Appuyer sur la touche \"Entrée\" pour modifier le vélo...");
 				sc.nextLine();
+				System.out.println("Appuyer sur la touche \"Entrée\" pour modifier le vélo...");
 				sc.nextLine();
 				
 				query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_etat = 'HS' "
@@ -93,7 +92,7 @@ public class Scenario {
 			}
 			else if (choix == 2)
 			{
-				sc.reset();
+				sc.nextLine();
 				System.out.println("Appuyer sur la touche \"Entrée\" pour insérer la location...");
 				sc.nextLine();
 				
