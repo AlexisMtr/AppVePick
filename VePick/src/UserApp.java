@@ -171,6 +171,7 @@ public class UserApp {
 						consulterPlages();
 						break;
 					case 4:
+						modifierPlageVplusVmoins();
 						break;
 					case 5:
 						afficherStatStation();
@@ -195,11 +196,55 @@ public class UserApp {
 	}
 
 
+	private static void modifierPlageVplusVmoins() throws Exception {
+		Station.afficherStation();
+		System.out.println("Quelle station voulez-vous ?");
+		int idStation = sc.nextInt();
+		if(Station.afficherPlages(idStation) == 0)
+		{
+			System.out.println("Pas de seuils pour cette station");
+			System.out.println("Voulez-vous ajouter des seuils ? (O/N)");
+			sc.nextLine();
+			char answer = sc.nextLine().charAt(0);
+			if (answer == 'O')
+			{
+				//affiche les plages horaire
+				Station.afficherPlages(idStation);
+				//demande quelle plage il veut
+				System.out.println("Quelle plage voulez vous modifier ?");
+				System.out.println("heure debut ?");
+				int plageDeb = sc.nextInt();
+				System.out.println("heure fin ?");
+				int plageFin = sc.nextInt();
+				//demande quels seuil il veut
+				System.out.println("seuil V+ ?");
+				int seuilVmoins = sc.nextInt();
+				System.out.println("seuil V- ?");
+				int seuilVplus = sc.nextInt();
+				//insert le seuil
+				Station.ajouterSeuil(idStation, plageDeb, plageFin, seuilVmoins, seuilVplus);
+			}
+		}else
+		{
+			System.out.println("Entrez les infos de la plage horaire à modifier : ");
+			System.out.println("plage Debut ?");
+			int plageDeb = sc.nextInt();
+			System.out.println("plage Fin ?");
+			int plageFin = sc.nextInt();
+			System.out.println("nouveau seuil V+ ?");
+			int seuilVmoins = sc.nextInt();
+			System.out.println("nouveau seuil V- ?");
+			int seuilVplus = sc.nextInt();
+			Station.modifierPlageHoraire(idStation, plageDeb, plageFin, seuilVmoins, seuilVplus);
+		}
+	}
+
+
 	private static void consulterPlages() throws Exception {
 		Station.afficherStation();
 		System.out.println("Quelle station voulez-vous ?");
 		int idStation = sc.nextInt();
-		Station.afficherPlages();
+		Station.afficherPlages(idStation);
 	}
 
 
