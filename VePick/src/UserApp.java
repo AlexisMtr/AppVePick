@@ -748,20 +748,29 @@ public class UserApp {
 	{
 		try
 		{
+			String codeRemise;
 			System.out.println("Quel velo associez-vous ?");
 			int veloId = sc.nextInt();
 			System.out.println("Sur quelle bornette ?");
 			int borneId = sc.nextInt();
-			
-			Velo.associerVelo(veloId, borneId);
 			
 			System.out.println("Saisir votre MDP");
 			sc.nextLine();
 			String password = sc.nextLine();
 			
 			int locationId = Location.VerifierLocation(password, userId, veloId);
+			System.out.println("Beneficiez vous d'une remise ? (non abonne uniquement) (O/N)");
+			String remise = sc.nextLine();
+			if(remise.equals("O"))
+			{
+				System.out.println("Merci de saisir le code : ");
+				codeRemise = sc.nextLine();
+			}
+			else
+				codeRemise = "";
+			
 			if(locationId != 0)
-				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId) + "€");
+				System.out.println("Montant paye : " + Location.FinirLocation(locationId, borneId, codeRemise) + "€");
 			else
 				System.err.println("Aucune locations trouvees");
 		}
