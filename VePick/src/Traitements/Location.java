@@ -74,9 +74,9 @@ public class Location {
 				int userId = rs.getInt("uti_id");
 				System.out.println("\nLocation " + id);
 				if(debut != null)
-					System.out.println("- Debut : " + debut.toLocaleString());
+					System.out.println("- Debut : " + debut);
 				if(fin != null)
-					System.out.println("- Fin : " + fin.toLocaleString());
+					System.out.println("- Fin : " + fin);
 				else
 					System.out.println("- Non terminee");
 				if(montant != null)
@@ -106,7 +106,7 @@ public class Location {
 	 * @throws En cas d'erreur : provoque un rollback et lève une exception
 	 * @return Retourne le montant de la location à regler
 	 */
-	public static Double FinirLocation(int locationId, int borneId) throws Exception
+	public static Double FinirLocation(int locationId, int borneId, String codeRemise) throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -135,6 +135,12 @@ public class Location {
 			
 			if(OK == 1)
 			{
+				stmt = Connexion.connexion().createStatement();
+				query = "UPDATE " + Connexion.schemasBD + "Location SET loc_fin = SYSDATE, loc_codeRemise = " + codeRemise + " WHERE loc_id = " + locationId;
+				stmt.executeUpdate(query);
+				stmt.close();
+				
+				
 				stmt = Connexion.connexion().createStatement();
 				query = "SELECT loc_montant FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 				rs = stmt.executeQuery(query);
@@ -172,7 +178,7 @@ public class Location {
 		boolean isOk = true;
 		int loc_id = 0;
 
-		query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
+		query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = " + MDP;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
