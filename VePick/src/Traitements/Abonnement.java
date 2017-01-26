@@ -36,8 +36,6 @@ public class Abonnement {
 				+ "'" + sexe + "', "
 				+ "'" + adresse + "')}";
 		
-		System.out.println("QUERY : " + query);
-		
 		String query2 = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_codeSecret = " + code;
 		try
 		{

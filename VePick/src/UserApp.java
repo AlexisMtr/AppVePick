@@ -487,6 +487,7 @@ public class UserApp {
 		if(tache_id == 0) return;
 
 		System.out.println("Commentaire a destination de votre superviseur (1 ligne) : ");
+		sc.next();
 		String comm = sc.nextLine();
 		
 		if(choix.equals("V"))
