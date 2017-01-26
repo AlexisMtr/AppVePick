@@ -11,7 +11,7 @@ public class Station {
 	/**
 	 * Affiche toutes les stations du parc de vélo
 	 */
-	public static void afficherStation() throws Exception
+	public static void afficherAllStations() throws Exception
 	{
 		String query = null;
 		Statement stmt = null;
@@ -71,6 +71,7 @@ public class Station {
 			stmt.close();
 			rs.close();
 			
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(nbBornetteQuery);
 			while(rs.next())
@@ -79,6 +80,7 @@ public class Station {
 			stmt.close();
 			rs.close();
 			
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(nbBornetteLibreQuery);
 			while(rs.next())
@@ -87,6 +89,7 @@ public class Station {
 			stmt.close();
 			rs.close();
 			
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(nbVeloHSQuery);
 			while(rs.next())

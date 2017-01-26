@@ -1,5 +1,6 @@
 package Traitements;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -32,6 +33,7 @@ public class Reservation {
 		ResultSet rs = null;
 		
 		query = "SELECT res_deb, res_fin FROM "+ Connexion.schemasBD+"Reservation WHERE uti_id ="+userId+" AND res_deb > SYSDATE";
+		Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 		stmt = Connexion.connexion().createStatement();
 		rs = stmt.executeQuery(query);
 		while(rs.next()) {
@@ -52,6 +54,7 @@ public class Reservation {
 				+ userId + ")";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
@@ -61,6 +64,7 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			query ="SELECT " + Connexion.schemasBD + "reservation_id.CURRVAL FROM dual";
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
@@ -93,6 +97,7 @@ public class Reservation {
 		query = "SELECT DISTINCT mod_id, mod_libelle FROM " + Connexion.schemasBD + "velo NATURAL JOIN " + Connexion.schemasBD + "modele ORDER BY mod_id";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Liste des modèles de velos disponibles :");
@@ -129,6 +134,7 @@ public class Reservation {
 		query = "SELECT sta_id, sta_adresse FROM " + Connexion.schemasBD + "station";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Liste des stations :");
@@ -164,9 +170,10 @@ public class Reservation {
 		ResultSet rs = null;
 		String query;
 		
+		query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
 		try
 		{
-			query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
@@ -201,6 +208,7 @@ public class Reservation {
 				+ "WHERE uti_id = "+userId+ " ORDER BY res_id";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Vos réservations :");
@@ -257,6 +265,7 @@ public class Reservation {
 		
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			while(rs.next())
@@ -270,6 +279,7 @@ public class Reservation {
 			if(rs != null) rs.close();
 			
 			query = "SELECT count(*) FROM " + Connexion.schemasBD + "Bornette WHERE sta_id ="+idStation;
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
@@ -283,6 +293,7 @@ public class Reservation {
 				//update validé
 				query = "UPDATE " + Connexion.schemasBD + "Reservation SET res_statut = 'validee' WHERE res_id ="+idReservation;
 				System.out.println("La réservation a été validée");
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				Connexion.connexion().commit();
@@ -320,6 +331,7 @@ public class Reservation {
 		query = "SELECT res_deb, res_fin, sta_id, res_statut FROM " + Connexion.schemasBD + "Reservation WHERE res_id ="+idReservation;
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(rs.next()) {
@@ -338,6 +350,7 @@ public class Reservation {
 			
 			if(idStation != 0) {
 				query = "SELECT res_deb, res_fin, res_id FROM " + Connexion.schemasBD + "Reservation WHERE res_deb > SYSDATE AND res_statut = 'en_attente' AND sta_id ="+idStation+"ORDER BY res_crea";
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 				stmt = Connexion.connexion().createStatement();
 				rs = stmt.executeQuery(query);
 				

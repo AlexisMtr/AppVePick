@@ -1,7 +1,9 @@
 package Traitements;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Scanner;
@@ -28,7 +30,6 @@ public class Routine {
 				+ "NATURAL JOIN " + Connexion.schemasBD + "Vehicule WHERE rou_id = " + rou_id;
 		try
 		{
-			// passe la transaction en mode READ COMMITTED
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
@@ -274,6 +275,43 @@ public class Routine {
 			if(stmt != null) stmt.close();
 		}
 		System.out.println("La routine à bien été supprimée !");
+	}
+	
+	
+	/**
+	 * Ajoute une tâche à une routine
+	 * @param rou_id : identifiant de la routine pour laquelle on veut ajouter une tâche
+	 * @param libelle : libelle de la tâche à ajouter
+	 * @param sta_id : identifiant de la station rattaché à la tâche à ajouter
+	 * @throws Exception - Lève une excpetion en cas d'erreur et effectue un rollbak
+	 */
+	public static void ajouterTache(int rou_id, String libelle, int sta_id) throws Exception {
+		String query = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		query = "INSERT INTO " + Connexion.schemasBD + "tache(tac_intitule, rou_id, sta_id) VALUES(" 
+				+"'"+ libelle + "', "
+				+ rou_id + ","
+				+ sta_id + ")";
+		try
+		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+			stmt = Connexion.connexion().createStatement();
+			stmt.executeUpdate(query);
+			Connexion.connexion().commit();
+			System.out.println("Tâche créée !");
+		}
+		catch(Exception ex)
+		{
+			Connexion.connexion().rollback();
+			throw ex;
+		}
+		finally
+		{
+			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
+		}
 	}
 	
 }

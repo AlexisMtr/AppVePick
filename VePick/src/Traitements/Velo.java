@@ -145,6 +145,7 @@ public class Velo {
 		query = "UPDATE " + Connexion.schemasBD + "Velo SET vel_etat = 'HS' WHERE vel_id = " + vel;
 		try
 		{
+			//TODO test isolation mode
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeUpdate(query);

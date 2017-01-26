@@ -24,6 +24,8 @@ public class Abonnement {
 	{
 		String query = null;
 		Statement stmt = null;
+		ResultSet rs = null;
+		int userId = 0;
 		
 		query = "{CALL " + Connexion.schemasBD + "CreerAbonne("
 				+ "'" + CB + "', "
@@ -35,11 +37,18 @@ public class Abonnement {
 				+ "'" + adresse + "')}";
 		
 		System.out.println("QUERY : " + query);
+		String query2 = "SELECT utilisateur_id.currval FROM " + Connexion.schemasBD + "DUAL";
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeQuery(query);
+			
+			stmt.close();
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query2);
+			if(rs.next())
+				userId = rs.getInt(1);
 			
 			Connexion.connexion().commit();
 		}
@@ -51,10 +60,10 @@ public class Abonnement {
 		finally
 		{
 			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}
 		
-		//TODO : retourner ID user
-		return 0;
+		return userId;
 	}
 	
 	/**
@@ -98,7 +107,7 @@ public class Abonnement {
 	 */
 	public static int nouvelUtilisateurNonAbonne(String CB) throws Exception
 	{
-		//TODO : a tester
+		//TODO : transaction a tester(génère un code et une requette va chercher ce code pour le retourner à user non abonné)
 		int password = 0;
 		String query = null;
 		Statement stmt = null;
