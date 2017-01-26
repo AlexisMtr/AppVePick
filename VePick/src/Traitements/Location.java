@@ -1,5 +1,6 @@
 package Traitements;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
@@ -27,8 +28,9 @@ public class Location {
 		
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);	
+			rs = stmt.executeQuery(query);
 			Connexion.connexion().commit();
 		}
 		catch(Exception ex)
@@ -56,6 +58,7 @@ public class Location {
 		query = "SELECT * FROM " + Connexion.schemasBD + "Location";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			
@@ -122,6 +125,7 @@ public class Location {
 			stmt.close();
 			rs.close();
 			
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			query = "UPDATE " + Connexion.schemasBD + "Bornette"
 					+ " SET vel_id = " + veloId
@@ -171,6 +175,7 @@ public class Location {
 		query = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_id = " + userId + " AND uti_codeSecret = '" + MDP + "'";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			if(!rs.next())
@@ -179,6 +184,7 @@ public class Location {
 			stmt.close();
 			rs.close();
 			
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			query = "SELECT loc_id FROM " + Connexion.schemasBD + "Location WHERE uti_id = " + userId + " AND vel_id = " + veloId + " AND loc_fin IS NULL";
 			rs = stmt.executeQuery(query);
@@ -220,6 +226,7 @@ public class Location {
 				+ "WHERE uti_id=" + userId + " ORDER BY loc_id";
 		try
 		{
+			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			System.out.println("Vos Locations :");

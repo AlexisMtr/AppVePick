@@ -229,7 +229,7 @@ public class Scenario {
 		String query = null;
 		Statement stmt = null;
 		int bor_id = 42;
-		int vel_id = 1;
+		int vel_id = 18;
 		
 		try
 		{

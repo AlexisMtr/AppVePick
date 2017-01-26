@@ -61,6 +61,7 @@ public class Abonnement {
 		finally
 		{
 			if(stmt != null) stmt.close();
+			if(rs != null) rs.close();
 		}
 
 		return user;
@@ -107,7 +108,7 @@ public class Abonnement {
 	 */
 	public static int nouvelUtilisateurNonAbonne(String CB) throws Exception
 	{
-		//TODO : a tester
+		//TODO : transaction a tester(génère un code et une requette va chercher ce code pour le retourner à user non abonné)
 		int password = 0;
 		String query = null;
 		Statement stmt = null;

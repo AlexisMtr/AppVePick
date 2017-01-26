@@ -178,10 +178,11 @@ public class UserApp {
 			System.out.println("\n[SUPERVISEUR] Que voulez vous faire ?");
 			System.out.println("1 - Consulter les Routines");
 			System.out.println("2 - Supprimer une routines");
-			System.out.println("3 - Consulter les plages V+/V-");
-			System.out.println("4 - Modifier les plages V+/V-");
-			System.out.println("5 - Voir les stats par stations");
-			System.out.println("6 - sortir !");
+			System.out.println("3 - Ajouter une tâche à une routine");
+			System.out.println("4 - Consulter les plages V+/V-");
+			System.out.println("5 - Modifier les plages V+/V-");
+			System.out.println("6 - Voir les stats par stations");
+			System.out.println("7 - sortir !");
 			
 			choix  = sc.nextInt();
 			try
@@ -195,15 +196,18 @@ public class UserApp {
 						supprimerRoutine();
 						break;
 					case 3:
-						consulterPlages();
+						ajouterTache();
 						break;
 					case 4:
-						modifierPlageVplusVmoins();
+						consulterPlages();
 						break;
 					case 5:
-						afficherStatStation();
+						modifierPlageVplusVmoins();
 						break;
 					case 6:
+						afficherStatStation();
+						break;
+					case 7:
 						sortir = true;
 						break;
 					default:
@@ -224,7 +228,7 @@ public class UserApp {
 
 
 	private static void modifierPlageVplusVmoins() throws Exception {
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station voulez-vous ?");
 		int idStation = sc.nextInt();
 		if(Station.afficherPlages(idStation) == 0)
@@ -268,7 +272,7 @@ public class UserApp {
 
 
 	private static void consulterPlages() throws Exception {
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station voulez-vous ?");
 		int idStation = sc.nextInt();
 		Station.afficherPlages(idStation);
@@ -276,7 +280,7 @@ public class UserApp {
 
 
 	private static void afficherStatStation() throws Exception {
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station voulez-vous ?");
 		int idStation = sc.nextInt();
 		Station.statsStation(idStation);
@@ -284,15 +288,37 @@ public class UserApp {
 
 
 	private static void supprimerRoutine() throws Exception {
-		int rou_id_choix;
+		int rou_id;
 		Routine.afficherAllRoutines();
 		
 		//demande routine id
 		System.out.println("Numéro choisi");
-		rou_id_choix = sc.nextInt();
+		rou_id = sc.nextInt();
 		
 		//supprimer tâches de routine
-		Routine.supprimerRoutine(rou_id_choix);
+		Routine.supprimerRoutine(rou_id);
+	}
+	
+	private static void ajouterTache() throws Exception {
+		int rou_id, sta_id;
+		String libelle;
+		//demander station id
+		System.out.println("Liste des stations : ");
+		Station.afficherAllStations();
+		System.out.println("Numéro de la station choisie");
+		sta_id = sc.nextInt();
+		
+		//demande routine id
+		Routine.afficherAllRoutines();
+		System.out.println("Numéro de routine choisie");
+		rou_id = sc.nextInt();
+		
+		//demande du libellé
+		System.out.println("Libellé pour la tâche : ");
+		sc.nextLine();
+		libelle = sc.nextLine();
+		//ajouter tâche à une routine
+		Routine.ajouterTache(rou_id, libelle, sta_id);
 	}
 
 
@@ -389,7 +415,7 @@ public class UserApp {
 
 	private static void deposerVelo() throws Exception
 	{
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station ?");
 		int sta = sc.nextInt();
 		int nb = Station.afficherBornette(sta);
@@ -423,7 +449,7 @@ public class UserApp {
 
 	private static void deplacerVelo() throws Exception
 	{
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station ?");
 		int sta = sc.nextInt();
 		Velo.afficherVelos(sta);
@@ -435,7 +461,7 @@ public class UserApp {
 
 
 	private static void declarerVeloHS() throws Exception {
-		Station.afficherStation();
+		Station.afficherAllStations();
 		System.out.println("Quelle station ?");
 		int sta = sc.nextInt();
 		Velo.afficherVelos(sta);

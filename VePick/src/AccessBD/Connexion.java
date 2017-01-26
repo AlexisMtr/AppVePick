@@ -27,7 +27,6 @@ public class Connexion {
 			DBAccesProperties dbAccess = new DBAccesProperties(configurationFile);
 			connexion = DriverManager.getConnection(dbAccess.getDBUrl(), dbAccess.getUsername(), dbAccess.getPassword());
 			connexion.setAutoCommit(false);
-			// TODO DATE complète
 			String query = " ALTER SESSION SET NLS_DATE_FORMAT='DD/MM/YYYY HH24:MI:SS'";
 			Statement stmt = connexion.createStatement();
 			stmt.executeQuery(query);
