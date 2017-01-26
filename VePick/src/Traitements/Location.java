@@ -136,7 +136,11 @@ public class Location {
 			if(OK == 1)
 			{
 				stmt = Connexion.connexion().createStatement();
-				query = "UPDATE " + Connexion.schemasBD + "Location SET loc_fin = SYSDATE, loc_codeRemise = " + codeRemise + " WHERE loc_id = " + locationId;
+				query = "UPDATE " + Connexion.schemasBD + "Location SET loc_fin = SYSDATE";
+				if(!codeRemise.equals(""))
+					query += ", loc_codeRemise = " + codeRemise;
+				query += " WHERE loc_id = " + locationId;
+				
 				stmt.executeUpdate(query);
 				stmt.close();
 				
@@ -144,7 +148,8 @@ public class Location {
 				stmt = Connexion.connexion().createStatement();
 				query = "SELECT loc_montant FROM " + Connexion.schemasBD + "Location WHERE loc_id = " + locationId;
 				rs = stmt.executeQuery(query);
-				montant = rs.getDouble("loc_montant");
+				if(rs.next())
+					montant = rs.getDouble("loc_montant");
 				Connexion.connexion().commit();
 			}
 		}

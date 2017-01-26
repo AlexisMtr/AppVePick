@@ -583,10 +583,11 @@ public class UserApp {
 			String sexe = sc.next();
 			//System.out.println(sexe);
 			System.out.println("Votre adresse : ");
-			String adresse = sc.next();
+			sc.nextLine();
+			String adresse = sc.nextLine();
 			//System.out.println(adresse);
 			System.out.println("Votre code : ");
-			int code = Integer.parseInt(sc.next());
+			int code = sc.nextInt();
 			//System.out.println(code);
 			System.out.println("Votre CB : ");
 			String CB = sc.next();

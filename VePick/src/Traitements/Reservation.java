@@ -167,15 +167,15 @@ public class Reservation {
 	public static void annulerReservationVelo(int userId, int numResa) throws Exception
 	{
 		Statement stmt = null;
-		ResultSet rs = null;
 		String query;
 		
-		query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+"AND uti_id="+userId;
+		query = "DELETE FROM " + Connexion.schemasBD + "reservation where res_id = " + numResa+" AND uti_id="+userId;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
-			rs = stmt.executeQuery(query);
+			int ligneSuppr = stmt.executeUpdate(query);
+			if (ligneSuppr == 0){throw new Exception("réservation inexistante");}
 			Connexion.connexion().commit();
 			System.out.println("La réservation a bien été supprimée !");
 		}
@@ -187,7 +187,6 @@ public class Reservation {
 		finally
 		{
 			if(stmt != null) stmt.close();
-			if(rs != null) rs.close();
 		}
 	}
 	
