@@ -11,6 +11,7 @@ import Traitements.Reservation;
 import Traitements.Routine;
 import Traitements.Scenario;
 import Traitements.Station;
+import Traitements.Utilisateur;
 import Traitements.Velo;
 
 public class UserApp {
@@ -72,6 +73,7 @@ public class UserApp {
 	{
 		boolean sortir = false;
 		int choix = 0;
+		int mdp;
 		while(choix == 0)
 		{
 			System.out.println("\n[CLIENT] Que voulez vous faire ?");
@@ -95,24 +97,45 @@ public class UserApp {
 						abonnement();
 						break;
 					case 2:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						renouvellement(userId);
 						break;
 					case 3:
-						louerVelo();
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
+						louerVelo(userId);
 						break;
 					case 4:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						reserverVelo(userId);
 						break;
 					case 5:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						annulerReservationVelo(userId);
 						break;
 					case 6:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						signalerDepart(userId);
 						break;
 					case 7:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						signalerArrivee(userId);
 						break;
 					case 8:
+						System.out.println("Votre MDP ?");
+						mdp = Integer.parseInt(sc.next());
+						userId = Utilisateur.connect(mdp);
 						rendreVelo();
 						break;
 					case 9:
@@ -140,8 +163,8 @@ public class UserApp {
 
 	private static void utilisateurNonAbonne() throws Exception {
 		System.out.println("Votre CB : ");
-		String CB = "4569517538520555";
-		System.out.println(CB);
+		String CB = sc.next();
+		//System.out.println(CB);
 		System.out.println("Votre MDP : " + Abonnement.nouvelUtilisateurNonAbonne(CB));
 	}
 
@@ -291,6 +314,7 @@ public class UserApp {
 	{
 		boolean sortir = false;
 		int choix = 0;
+		int id;
 		while(choix == 0)
 		{
 			System.out.println("\n[CONDUCTEUR] Que voulez vous faire ?");
@@ -308,21 +332,39 @@ public class UserApp {
 				switch(choix)
 				{
 					case 1:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						declarerVeloHS();
 						break;
 					case 2:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						consulterRoutine(userId);
 						break;
 					case 3:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						validerTache(userId);
 						break;
 					case 4:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						deplacerVelo();
 						break;
 					case 5:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						deposerEnCentre();
 						break;
 					case 6:
+						System.out.println("Votre ID ?");
+						id = Integer.parseInt(sc.next());
+						userId = Utilisateur.connectConducteur(id);
 						deposerVelo();
 						break;
 					case 7:
@@ -501,28 +543,28 @@ public class UserApp {
 	private static void abonnement() {	
 		try
 		{
-			//sc.reset();
-			System.out.println("Votrz nom : ");
-			String nom = "Hugo";
-			System.out.println(nom);
+			sc.reset();
+			System.out.println("Votre nom : ");
+			String nom = sc.next();
+			//System.out.println(nom);
 			System.out.println("Votre prenom : ");
-			String prenom = "Luc";
-			System.out.println(prenom);
+			String prenom = sc.next();
+			//System.out.println(prenom);
 			System.out.println("Votre date de naissance (JJ/MM/AAAA) : ");
-			String naissance = "08/04/1995";
-			System.out.println(naissance);
+			String naissance = sc.next();
+			//System.out.println(naissance);
 			System.out.println("Votre sexe (M|F) : ");
-			String sexe = "M";
-			System.out.println(sexe);
+			String sexe = sc.next();
+			//System.out.println(sexe);
 			System.out.println("Votre adresse : ");
-			String adresse = "Rue de la Chimie";
-			System.out.println(adresse);
+			String adresse = sc.next();
+			//System.out.println(adresse);
 			System.out.println("Votre code : ");
-			int code = 159951;
-			System.out.println(code);
+			int code = Integer.parseInt(sc.next());
+			//System.out.println(code);
 			System.out.println("Votre CB : ");
-			String CB = "1596547893215084";
-			System.out.println(CB);
+			String CB = sc.next();
+			//System.out.println(CB);
 			
 			Abonnement.nouvelAbonne(nom, prenom, CB, sexe, naissance, adresse, code);
 		}
@@ -572,7 +614,7 @@ public class UserApp {
 		}
 	}
 
-	public static void louerVelo() throws Exception
+	public static void louerVelo(int user) throws Exception
 	{
 		int sta, velo;
 		System.out.println("Quelle station ?");
@@ -582,7 +624,7 @@ public class UserApp {
 		System.out.println("Quel velo ?");
 		
 		velo = sc.nextInt();
-		Location.LouerVelo(velo, userId);
+		Location.LouerVelo(velo, user);
 	}
 	
 	public static void reserverVelo(int userId)

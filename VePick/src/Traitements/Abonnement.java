@@ -24,6 +24,8 @@ public class Abonnement {
 	{
 		String query = null;
 		Statement stmt = null;
+		ResultSet rs = null;
+		int user = 0;
 		
 		query = "{CALL " + Connexion.schemasBD + "CreerAbonne("
 				+ "'" + CB + "', "
@@ -35,11 +37,19 @@ public class Abonnement {
 				+ "'" + adresse + "')}";
 		
 		System.out.println("QUERY : " + query);
+		
+		String query2 = "SELECT uti_id FROM " + Connexion.schemasBD + "Utilisateur WHERE uti_codeSecret = " + code;
 		try
 		{
 			Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			stmt = Connexion.connexion().createStatement();
 			stmt.executeQuery(query);
+			
+			stmt.close();
+			stmt = Connexion.connexion().createStatement();
+			rs = stmt.executeQuery(query2);
+			if(rs.next())
+				user = rs.getInt(1);
 			
 			Connexion.connexion().commit();
 		}
@@ -52,9 +62,8 @@ public class Abonnement {
 		{
 			if(stmt != null) stmt.close();
 		}
-		
-		//TODO : retourner ID user
-		return 0;
+
+		return user;
 	}
 	
 	/**
