@@ -124,7 +124,7 @@ public class Abonnement {
 			stmt.close();
 			
 			// recupere le dernier ID inserer
-			query = "SELECT " + Connexion.schemasBD + "utilisateur_id.currval FROM dual";
+			query = "SELECT MAX(uti_id) FROM " + Connexion.schemasBD + "Utilisateur";
 			stmt = Connexion.connexion().createStatement();
 			rs = stmt.executeQuery(query);
 			while(rs.next())
