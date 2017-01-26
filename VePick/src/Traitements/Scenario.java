@@ -229,7 +229,7 @@ public class Scenario {
 		String query = null;
 		Statement stmt = null;
 		int bor_id = 42;
-		int vel_id = 18;
+		int vel_id = 17;
 		
 		try
 		{
@@ -244,6 +244,22 @@ public class Scenario {
 			
 			if (choix == 1)
 			{
+				query = "UPDATE " + Connexion.schemasBD + "velo SET vel_statut = 'loue' "
+						+ "WHERE vel_id = " + vel_id;
+				
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				stmt = Connexion.connexion().createStatement();
+				stmt.executeQuery(query);
+				stmt.close();
+				
+				query = "UPDATE " + Connexion.schemasBD + "bornette SET vel_id = null "
+						+ "WHERE bor_id = " + bor_id;
+				
+				Connexion.connexion().setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				stmt = Connexion.connexion().createStatement();
+				stmt.executeQuery(query);
+				stmt.close();
+				
 				sc.nextLine();
 				System.out.println("Appuyer sur la touche \"Entrée\" pour modifier la bornette...");
 				sc.nextLine();
